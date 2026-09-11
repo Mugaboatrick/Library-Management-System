@@ -1,0 +1,15 @@
+{
+  "name": "hope-haven-library",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hope Haven Smart Library Management & E-Book System",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm start --prefix frontend\"",
+    "start:backend": "npm start --prefix backend",
+    "start:frontend": "npm start --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

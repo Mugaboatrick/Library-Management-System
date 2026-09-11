@@ -1,0 +1,6 @@
+node_modules
+uploads/ebooks/*
+!uploads/ebooks/.gitkeep
+uploads/qrcards/*
+!uploads/qrcards/.gitkeep
+.env
