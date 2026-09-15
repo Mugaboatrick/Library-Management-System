@@ -3,6 +3,7 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import Modal from '../../components/common/Modal';
 import { ebookService, reportService, publicUrl } from '../../services';
 import { toast } from 'react-toastify';
+import SubjectCover from '../../components/common/SubjectCover';
 
 const AdminEbooks = () => {
   const [ebooks, setEbooks] = useState([]);
@@ -106,7 +107,7 @@ const AdminEbooks = () => {
                   />
                 </div>
               ) : (
-                <div className="h-40 bg-gradient-to-br from-primary-100 to-blue-100 flex items-center justify-center text-5xl">📖</div>
+                <SubjectCover subject={eb.subject} grade={eb.grade_level} title={eb.author} />
               )}
               <div className="p-5 flex flex-col flex-1">
               <h3 className="font-semibold text-gray-800">{eb.title}</h3>

@@ -4,6 +4,7 @@ import UserLayout from '../components/layout/UserLayout';
 import { ebookService, borrowService, publicUrl } from '../services';
 import offlineCache from '../services/offlineCache';
 import { toast } from 'react-toastify';
+import SubjectCover from '../components/common/SubjectCover';
 
 const MyEbooks = () => {
   const [ebooks, setEbooks] = useState([]);
@@ -91,7 +92,7 @@ const MyEbooks = () => {
                   />
                 </div>
               ) : (
-                <div className="h-36 bg-gradient-to-br from-primary-100 to-blue-100 flex items-center justify-center text-4xl">📖</div>
+                <SubjectCover subject={eb.subject} grade={eb.grade_level} title={eb.author} />
               )}
               <div className="p-5 flex flex-col flex-1">
                 <div className="flex items-start justify-between">

@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { accountRequestService } from '../../services';
 import { toast } from 'react-toastify';
 
 const Login = () => {
-  const [mode, setMode] = useState('qr');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanStatus, setScanStatus] = useState('');
   const [manualInput, setManualInput] = useState('');
-  const { login, loginQR } = useAuth();
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [sendingRequest, setSendingRequest] = useState(false);
+  const [requestForm, setRequestForm] = useState({
+    first_name: '', last_name: '', email: '', phone: '', role: 'STUDENT',
+    message: 'I need another way to enter the library. Please create an account for me.'
+  });
+  const { loginQR } = useAuth();
   const navigate = useNavigate();
   const scannerRef = useRef(null);
   const processingRef = useRef(false);
@@ -19,19 +23,6 @@ const Login = () => {
   const handleLoginSuccess = (user) => {
     toast.success(`Welcome, ${user.first_name}!`);
     navigate('/welcome');
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const user = await login(email, password);
-      handleLoginSuccess(user);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
   };
 
   const processQR = async (qrText) => {
@@ -87,7 +78,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error('Scanner error:', err);
-      toast.error('Cannot access camera. Use email login or enter QR manually.');
+      toast.error('Cannot access camera. Enter your QR data manually below.');
       setScanning(false);
       setScanStatus('');
     }
@@ -127,151 +118,217 @@ const Login = () => {
     }
   };
 
+  const toggleRequestForm = () => {
+    setShowRequestForm((s) => !s);
+    if (!requestForm.first_name) {
+      setRequestForm((f) => ({
+        ...f,
+        message: 'I need another way to enter the library. Please create an account for me.'
+      }));
+    }
+  };
+
+  const handleRequestSubmit = async (e) => {
+    e.preventDefault();
+    setSendingRequest(true);
+    try {
+      const res = await accountRequestService.create({
+        first_name: requestForm.first_name,
+        last_name: requestForm.last_name,
+        email: requestForm.email,
+        phone: requestForm.phone || null,
+        role: requestForm.role,
+        message: requestForm.message
+      });
+      toast.success(res.data.message);
+      setShowRequestForm(false);
+      setRequestForm({ first_name: '', last_name: '', email: '', phone: '', role: 'STUDENT', message: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Could not send your request');
+    } finally {
+      setSendingRequest(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 to-primary-700 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 animate-zoom-in">
-        <div className="text-center mb-6 animate-fade-up">
-          <img src="/hope-logo.png" alt="Hope Haven School Library" className="w-16 h-16 object-contain mb-2 mx-auto" />
-          <h1 className="text-2xl font-bold text-primary-800">Hope Haven School Library</h1>
-          <p className="text-gray-500 text-sm">Smart Library Management System</p>
-        </div>
+    <div
+      className="min-h-screen flex items-center justify-center p-4 relative"
+      style={{
+        backgroundImage: "url('/library-bg.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-950/80 via-primary-900/70 to-primary-800/80"></div>
 
-        <div className="flex bg-gray-100 rounded-lg p-1 mb-6 animate-fade-up" style={{ animationDelay: '100ms' }}>
-          <button
-            onClick={() => { if (mode !== 'qr') setMode('qr'); }}
-            className={`flex-1 py-2 rounded-md text-sm font-medium transition ${mode === 'qr' ? 'bg-primary-600 text-white shadow' : 'text-gray-600'}`}
-          >
-            📷 Scan QR Card
-          </button>
-          <button
-            onClick={() => { stopScanner(); setMode('credentials'); }}
-            className={`flex-1 py-2 rounded-md text-sm font-medium transition ${mode === 'credentials' ? 'bg-primary-600 text-white shadow' : 'text-gray-600'}`}
-          >
-            🔑 Email & Password
-          </button>
-        </div>
+      <div className="w-full max-w-sm relative z-10">
+        {/* Compact card */}
+        <div className="bg-white rounded-2xl shadow-2xl p-6 animate-zoom-in">
+          {/* Header */}
+          <div className="text-center mb-4 animate-fade-up">
+            <img src="/hope-logo.png" alt="Hope Haven School Library" className="w-12 h-12 object-contain mb-1.5 mx-auto" />
+            <h1 className="text-lg font-bold text-primary-800 leading-tight">Hope Haven School Library</h1>
+            <p className="text-gray-500 text-xs">Smart Library Management System</p>
+          </div>
 
-        {mode === 'qr' ? (
-          <div className="text-center">
-            <p className="text-gray-600 text-sm mb-4">Scan your Library Access Card QR code to sign in</p>
+          {/* QR mode */}
+          <p className="text-center text-gray-600 text-xs mb-3">
+            Scan your Library Access Card QR code
+          </p>
 
-            {/* Scanner viewport */}
-            <div
-              id="qr-login-reader"
-              className="mx-auto rounded-lg overflow-hidden"
-              style={{
-                display: scanning ? 'block' : 'none',
-                width: '100%',
-                minHeight: '300px'
-              }}
-            ></div>
+          {/* Scanner viewport */}
+          <div
+            id="qr-login-reader"
+            className="mx-auto rounded-lg overflow-hidden"
+            style={{
+              display: scanning ? 'block' : 'none',
+              width: '100%',
+              minHeight: '220px'
+            }}
+          ></div>
 
-            {/* Status */}
-            {scanStatus && (
-              <div className={`mt-3 px-4 py-2 rounded-lg text-sm font-medium ${
-                scanStatus.startsWith('Error') ? 'bg-red-100 text-red-700' :
-                scanStatus.includes('Logging in') || scanStatus.includes('detected') ? 'bg-green-100 text-green-700' :
-                'bg-blue-100 text-blue-700'
-              }`}>
-                {scanStatus}
-              </div>
-            )}
+          {/* Status */}
+          {scanStatus && (
+            <div className={`mt-2 px-3 py-1.5 rounded-lg text-xs font-medium ${
+              scanStatus.startsWith('Error') ? 'bg-red-100 text-red-700' :
+              scanStatus.includes('Logging in') || scanStatus.includes('detected') ? 'bg-green-100 text-green-700' :
+              'bg-blue-100 text-blue-700'
+            }`}>
+              {scanStatus}
+            </div>
+          )}
 
-            {/* Start scan button */}
-            {!scanning && !loading && (
+          {/* Start scan button */}
+          {!scanning && !loading && (
+            <button
+              onClick={startScanner}
+              className="mx-auto w-32 h-32 bg-gray-100 border-2 border-dashed border-primary-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-primary-50 transition animate-pulse-soft"
+            >
+              <div className="text-3xl mb-1">📷</div>
+              <span className="text-primary-600 text-xs font-medium">Click to Scan</span>
+              <span className="text-gray-400 text-[10px] mt-0.5">Allow camera access</span>
+            </button>
+          )}
+
+          {scanning && (
+            <button
+              onClick={stopScanner}
+              className="mt-2 block mx-auto px-5 py-1.5 bg-red-600 text-white rounded-lg text-xs hover:bg-red-700"
+            >
+              Stop Scanning
+            </button>
+          )}
+
+          {loading && !scanning && (
+            <p className="text-primary-600 text-xs mt-2 text-center">Verifying card...</p>
+          )}
+
+          {/* Manual fallback */}
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <p className="text-[10px] text-gray-400 mb-1.5">Or paste QR code data manually:</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={manualInput}
+                onChange={(e) => setManualInput(e.target.value)}
+                placeholder="Paste QR data here..."
+                className="flex-1 px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
               <button
-                onClick={startScanner}
-                className="mx-auto w-48 h-48 bg-gray-100 border-2 border-dashed border-primary-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-primary-50 transition animate-pulse-soft"
+                onClick={handleManualSubmit}
+                disabled={loading || !manualInput.trim()}
+                className="px-3 py-1.5 bg-primary-600 text-white rounded-lg text-xs hover:bg-primary-700 disabled:opacity-50"
               >
-                <div className="text-5xl mb-2">📷</div>
-                <span className="text-primary-600 text-sm font-medium">Click to Scan</span>
-                <span className="text-gray-400 text-xs mt-1">Allow camera access</span>
+                Login
               </button>
-            )}
+            </div>
+          </div>
 
-            {scanning && (
-              <button
-                onClick={stopScanner}
-                className="mt-3 px-6 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700"
-              >
-                Stop Scanning
-              </button>
-            )}
+          {/* Footer links */}
+          <div className="mt-3 pt-3 border-t border-gray-200 text-center space-y-1.5">
+            <p className="text-[10px] text-gray-400">
+              No account? Ask the librarian — accounts are issued with a QR card.
+            </p>
+            <button
+              onClick={toggleRequestForm}
+              className="inline-block text-[11px] font-medium text-primary-600 hover:text-primary-700"
+            >
+              {showRequestForm ? 'Hide request form' : 'Need an account? Request one'}
+            </button>
 
-            {loading && !scanning && (
-              <p className="text-primary-600 text-sm mt-3">Verifying card...</p>
-            )}
-
-            {/* Manual fallback */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <p className="text-xs text-gray-400 mb-2">Or paste QR code data manually:</p>
-              <div className="flex gap-2">
+            {showRequestForm && (
+              <form onSubmit={handleRequestSubmit} className="text-left mt-2 pt-2 border-t border-gray-200 space-y-2">
+                <p className="text-[10px] text-gray-500">
+                  Tell the librarian how you need to enter the library. Your request appears in their "Members &amp; Login"
+                  section so they can create your account.
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={requestForm.first_name}
+                    onChange={(e) => setRequestForm({ ...requestForm, first_name: e.target.value })}
+                    placeholder="First name"
+                    className="px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                  />
+                  <input
+                    type="text"
+                    value={requestForm.last_name}
+                    onChange={(e) => setRequestForm({ ...requestForm, last_name: e.target.value })}
+                    placeholder="Last name"
+                    className="px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                  />
+                </div>
+                <input
+                  type="email"
+                  value={requestForm.email}
+                  onChange={(e) => setRequestForm({ ...requestForm, email: e.target.value })}
+                  placeholder="Email address"
+                  className="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  required
+                />
                 <input
                   type="text"
-                  value={manualInput}
-                  onChange={(e) => setManualInput(e.target.value)}
-                  placeholder="Paste QR data here..."
-                  className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  value={requestForm.phone}
+                  onChange={(e) => setRequestForm({ ...requestForm, phone: e.target.value })}
+                  placeholder="Phone (optional)"
+                  className="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <select
+                  value={requestForm.role}
+                  onChange={(e) => setRequestForm({ ...requestForm, role: e.target.value })}
+                  className="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                >
+                  <option value="STUDENT">I am a Student</option>
+                  <option value="TEACHER">I am a Teacher</option>
+                  <option value="GUEST">I am a Guest / Visitor</option>
+                </select>
+                <textarea
+                  value={requestForm.message}
+                  onChange={(e) => setRequestForm({ ...requestForm, message: e.target.value })}
+                  placeholder="Write why you need an account..."
+                  rows="2"
+                  className="w-full px-2.5 py-1.5 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
                 <button
-                  onClick={handleManualSubmit}
-                  disabled={loading || !manualInput.trim()}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm hover:bg-primary-700 disabled:opacity-50"
+                  type="submit"
+                  disabled={sendingRequest}
+                  className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg text-xs font-medium hover:bg-primary-700 disabled:opacity-50"
                 >
-                  Login
+                  {sendingRequest ? 'Sending request...' : '✉️ Send Request to the Librarian'}
                 </button>
-              </div>
-            </div>
+              </form>
+            )}
 
-            <p className="text-xs text-gray-400 mt-3">
-              Tip: All users can scan their card. Librarians can also use email & password.
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+            <Link
+              to="/login/admin"
+              className="block text-[10px] text-gray-300 hover:text-primary-600"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500 mb-2">Demo accounts</p>
-              <div className="text-xs text-gray-400 space-y-1">
-                <p>Librarian: librarian@hopehaven.edu / admin123</p>
-                <p>Student: student@hopehaven.edu / student123</p>
-                <p>Teacher: teacher@hopehaven.edu / teacher123</p>
-              </div>
-            </div>
-          </form>
-        )}
-
-        <div className="mt-4 text-center text-sm">
-          <span className="text-gray-500">New student/teacher?</span>{' '}
-          <Link to="/register" className="text-primary-600 hover:underline">Register here</Link>
+              Librarian sign in
+            </Link>
+          </div>
         </div>
       </div>
     </div>

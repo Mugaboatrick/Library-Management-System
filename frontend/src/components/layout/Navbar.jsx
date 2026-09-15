@@ -20,7 +20,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const handleNav = () => setMenuOpen(false);
@@ -28,24 +28,24 @@ const Navbar = () => {
   const roleLabel = user?.role?.charAt(0) + user?.role?.slice(1).toLowerCase();
 
   return (
-    <nav className="relative overflow-hidden animate-gradient bg-gradient-to-r from-primary-900 via-primary-700 to-blue-600 text-white shadow-lg">
+    <nav className="relative overflow-hidden bg-gradient-to-r from-primary-900 via-primary-700 to-blue-600 text-white shadow-lg">
       {/* Decorative layers */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-8 -left-8 w-40 h-40 rounded-full bg-cyan-300/20 brand-blob"></div>
-        <div className="absolute -bottom-10 right-1/4 w-36 h-36 rounded-full bg-indigo-400/20 brand-blob" style={{ animationDelay: '-5s' }}></div>
+        <div className="absolute -top-8 -left-8 w-40 h-40 rounded-full bg-cyan-300/20"></div>
+        <div className="absolute -bottom-10 right-1/4 w-36 h-36 rounded-full bg-indigo-400/20"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-2 animate-fade-right min-w-0">
-            <span className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden animate-bounce-soft">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center overflow-hidden">
             <img src="/hope-logo.png" alt="Hope Haven" className="w-6 h-6 object-contain" />
           </span>
             <Link to={user?.role === 'LIBRARIAN' ? '/admin' : '/dashboard'} className="text-lg font-bold hover:text-blue-100 transition truncate">
 Hope Haven School Library
             </Link>
           </div>
-          <div className="flex items-center gap-3 animate-fade-left">
+          <div className="flex items-center gap-3">
             {user && (
               <>
                 <div className="hidden sm:flex items-center gap-3 glass-card-dark rounded-full pr-4 py-1.5 pl-1.5">
@@ -73,7 +73,7 @@ Hope Haven School Library
 
       {/* Dropdown menu */}
       {menuOpen && user && (
-        <div className="relative border-t border-white/10 animate-fade-down">
+        <div className="relative border-t border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-1">
             {links.map((l) => (
               <Link

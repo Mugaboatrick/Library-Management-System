@@ -21,6 +21,8 @@ export const userService = {
   create: (data) => api.post('/users', data),
   update: (id, data) => api.put(`/users/${id}`, data),
   block: (id, data) => api.put(`/users/${id}/block`, data),
+  resetPassword: (id, data) => api.put(`/users/${id}/reset-password`, data),
+  remove: (id) => api.delete(`/users/${id}`),
   getQRCards: (id) => api.get(`/users/${id}/qrcards`),
   regenerateQR: (userId) => api.post(`/users/${userId}/qrcards/regenerate`),
   deleteQRCard: (userId, cardId) => api.delete(`/users/${userId}/qrcards/${cardId}`),
@@ -76,4 +78,16 @@ export const reportService = {
   fines: () => api.get('/reports/fines'),
   auditLogs: () => api.get('/reports/audit-logs'),
   runFineCron: () => api.post('/reports/run-fine-cron')
+};
+
+export const settingsService = {
+  getEmailLogin: () => api.get('/settings/email-login'),
+  setEmailLogin: (data) => api.put('/settings/email-login', data)
+};
+
+export const accountRequestService = {
+  create: (data) => api.post('/account-requests', data),
+  list: (params) => api.get('/account-requests', { params }),
+  updateStatus: (id, data) => api.put(`/account-requests/${id}`, data),
+  remove: (id) => api.delete(`/account-requests/${id}`)
 };

@@ -31,7 +31,7 @@ const Welcome = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const programs = [

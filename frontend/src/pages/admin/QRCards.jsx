@@ -204,7 +204,7 @@ const AdminQRCards = () => {
       <style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;font-family:Arial}
       .qr-card{text-align:center;border:2px solid #334155;background:#ffffff;padding:25px;border-radius:12px;width:300px}
       .card-header{font-size:18px;font-weight:bold;color:#1e293b}.card-sub{font-size:11px;color:#64748b;margin-bottom:15px}
-      .qr-img{width:180px;height:180px;margin:10px 0}.member-id{font-family:monospace;font-size:18px;font-weight:bold;margin:8px 0 4px;color:#1e293b}
+      .qr-img{width:240px;height:240px;margin:10px 0}.member-id{font-family:monospace;font-size:18px;font-weight:bold;margin:8px 0 4px;color:#1e293b}
       .member-name{font-size:14px}.member-role{font-size:12px;color:#64748b}.card-number{font-size:11px;color:#64748b;margin-top:8px;font-family:monospace}</style></head><body>${buildCardHTML(user)}</body></html>`;
     const w = window.open('', '_blank');
     w.document.write(html);
@@ -230,6 +230,7 @@ const AdminQRCards = () => {
   };
 
   const usersWithQR = users.filter(u => qrImages[u.id]);
+  const usersWithCards = users.filter(u => u.allCards.length > 0);
   const allSelected = usersWithQR.length > 0 && usersWithQR.every(u => selected[u.id]);
 
   const statusColors = { ACTIVE: 'bg-green-100 text-green-700', REPLACED: 'bg-yellow-100 text-yellow-700', BLOCKED: 'bg-red-100 text-red-700', INACTIVE: 'bg-gray-100 text-gray-500' };
@@ -272,7 +273,7 @@ const AdminQRCards = () => {
         <div className="text-center py-12 text-gray-500">Loading...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {users.map((u) => (
+          {usersWithCards.map((u) => (
             <div key={u.id} className={`card-hover bg-white border rounded-lg p-4 flex flex-col items-center transition ${selected[u.id] ? 'border-primary-500 ring-2 ring-primary-200' : 'border-gray-200'}`}>
               {qrImages[u.id] && (
                 <label className="self-start mb-2 flex items-center gap-1 text-xs text-gray-500 cursor-pointer">
@@ -376,7 +377,7 @@ const AdminQRCards = () => {
             </div>
           ))}
 
-          {users.length === 0 && (
+          {usersWithCards.length === 0 && (
             <div className="col-span-full text-center py-12 text-gray-400">No users found</div>
           )}
         </div>

@@ -81,6 +81,17 @@ const AdminUsers = () => {
     }
   };
 
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Permanently delete this account? All their cards, borrowings and fines will be removed. This cannot be undone.')) return;
+    try {
+      await userService.remove(id);
+      toast.success('User deleted permanently');
+      loadUsers();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete user');
+    }
+  };
+
   const handleRegenerateQR = async (userId) => {
     if (!window.confirm('Generate a new QR card? The old card will stop working.')) return;
     setRegeneratingQR(userId);
@@ -177,6 +188,7 @@ const AdminUsers = () => {
                             ? <button onClick={() => handleBlock(user.id, 'activate')} className="text-green-600 hover:underline text-xs">Unblock</button>
                             : <button onClick={() => handleBlock(user.id, 'block')} className="text-red-600 hover:underline text-xs">Block</button>
                         )}
+                        <button onClick={() => handleDeleteUser(user.id)} className="text-red-600 hover:underline text-xs ml-1">Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -199,13 +211,7 @@ const AdminUsers = () => {
                               <>
                                 <p className="text-xs text-gray-500">Card: <span className="font-mono">{detailUser.card.card_number}</span></p>
                                 <img src={`http://localhost:5000${detailUser.card.qr_code_url}`} alt="QR" className="w-20 h-20 mt-2 rounded border" />
-                                <button
-                                  onClick={() => handleRegenerateQR(detailUser.user.id)}
-                                  disabled={regeneratingQR === detailUser.user.id}
-                                  className="mt-2 text-xs text-red-600 hover:underline disabled:opacity-50"
-                                >
-                                  {regeneratingQR === detailUser.user.id ? 'Regenerating...' : 'Regenerate QR Card'}
-                                </button>
+                        <button onClick={() => handleDeleteUser(user.id)} className="text-red-600 hover:underline text-xs ml-1">Delete</button>
                               </>
                             ) : (
                               <>

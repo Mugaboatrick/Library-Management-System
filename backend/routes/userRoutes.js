@@ -16,5 +16,7 @@ router.get('/:id/qrcards', userController.getQRCards);
 router.post('/:user_id/qrcards/regenerate', userController.regenerateQR);
 router.delete('/:id/qrcards/:cardId', userController.deleteCard);
 router.put('/:id/qrcards/:cardId', userController.updateCard);
+router.put('/:id/reset-password', userController.resetPassword);
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

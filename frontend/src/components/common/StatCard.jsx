@@ -27,7 +27,7 @@ const CountUp = ({ value, duration = 800 }) => {
 const StatCard = ({ label, value, icon, color = 'bg-primary-600', delay = 0, animate = false, glass = false }) => {
   return (
     <div
-      className={`card-hover ${glass ? 'glass-card border border-white/60 rounded-2xl shadow-md' : 'bg-white rounded-lg shadow-sm border border-gray-200'} p-5`}
+      className={`card-hover ${glass ? 'bg-white border border-gray-200 rounded-2xl shadow-md' : 'bg-white rounded-lg shadow-sm border border-gray-200'} p-5`}
       style={{ animationDelay: delay ? `${delay}ms` : undefined }}
     >
       <div className="flex items-center">

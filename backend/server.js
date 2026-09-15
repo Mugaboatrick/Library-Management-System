@@ -18,6 +18,9 @@ const fineRoutes = require('./routes/fineRoutes');
 const ebookRoutes = require('./routes/ebookRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
+const accountRequestRoutes = require('./routes/accountRequestRoutes');
+const { cleanupDeletedQRCards } = require('./controllers/userController');
 const { startCronJobs } = require('./cron/fineCron');
 
 const app = express();
@@ -68,6 +71,8 @@ app.use('/api/fines', fineRoutes);
 app.use('/api/ebooks', ebookRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/account-requests', accountRequestRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -112,6 +117,12 @@ async function start() {
   const dbOk = await testConnection();
   if (!dbOk) {
     console.log('WARNING: Database not connected. Run database/schema.sql and set DB credentials in .env');
+  } else {
+    try {
+      await cleanupDeletedQRCards();
+    } catch (err) {
+      console.error('QR card cleanup failed:', err.message);
+    }
   }
 }
 

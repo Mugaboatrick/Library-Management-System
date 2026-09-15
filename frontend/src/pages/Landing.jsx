@@ -55,8 +55,7 @@ const Landing = () => {
                 </Link>
               ) : (
                 <>
-                  <Link to="/login" className="px-5 py-2 rounded-full text-sm font-semibold text-primary-700 border-2 border-primary-200 hover:border-primary-400 hover:bg-primary-50 transition">Sign In</Link>
-                  <Link to="/register" className="btn-hero px-5 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-blue-500">Get Started</Link>
+                  <Link to="/login" className="btn-hero px-5 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-primary-600 to-blue-500">Scan QR Card</Link>
                 </>
               )}
             </div>
@@ -99,7 +98,7 @@ const Landing = () => {
             ) : (
               <>
                 <Link to="/login" className="btn-hero px-8 py-3.5 rounded-full font-semibold bg-white text-primary-800">Sign In Now</Link>
-                <Link to="/register" className="btn-hero px-8 py-3.5 rounded-full font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 text-white">Create Account</Link>
+                <Link to="/login" className="btn-hero px-8 py-3.5 rounded-full font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 text-white">Scan QR Card</Link>
               </>
             )}
             <button
@@ -216,8 +215,8 @@ const Landing = () => {
           </div>
           <div className="text-center mt-12 animate-fade-up">
             {!user && (
-              <Link to="/register" className="btn-hero px-8 py-3.5 rounded-full font-semibold bg-white text-primary-800">
-                Join the Library →
+              <Link to="/login" className="btn-hero px-8 py-3.5 rounded-full font-semibold bg-white text-primary-800">
+                Scan QR Card to Sign In →
               </Link>
             )}
           </div>
@@ -225,7 +224,7 @@ const Landing = () => {
       </section>
 
       {/* ===== CTA ===== */}
-      <section className="py-16">
+      <section id="cta" className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="glass-card rounded-3xl p-10 sm:p-14 text-center border border-white/60 shadow-lg animate-zoom-in">
             <h2 className="text-3xl font-extrabold mb-3">Ready to open a book?</h2>
@@ -238,7 +237,7 @@ const Landing = () => {
               ) : (
                 <>
                   <Link to="/login" className="btn-hero px-8 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-primary-600 to-blue-500">Sign In</Link>
-                  <Link to="/register" className="btn-hero px-8 py-3 rounded-full font-semibold text-primary-800 bg-white border-2 border-primary-200">Create Account</Link>
+                  <Link to="/login" className="btn-hero px-8 py-3 rounded-full font-semibold text-primary-800 bg-white border-2 border-primary-200">Scan QR Card</Link>
                 </>
               )}
             </div>
@@ -248,12 +247,94 @@ const Landing = () => {
 
       {/* ===== Footer ===== */}
       <footer className="bg-slate-900 text-slate-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <img src="/hope-logo.png" alt="Hope Haven School Library" className="w-9 h-9 object-contain" />
+                <div>
+                  <div className="font-bold text-white">Hope Haven School Library</div>
+                  <div className="text-xs text-slate-500">Smart Library Management System</div>
+                </div>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Bringing reading and learning together for students, teachers, and guests —
+                simple, fast, and secure.
+              </p>
+            </div>
+
+            {/* About Us */}
+            <div>
+              <h4 className="text-white font-bold mb-3">About Us</h4>
+              <p className="text-sm text-slate-400 leading-relaxed mb-3">
+                Hope Haven School Library Management System is a complete digital solution for modern school
+                libraries. We replace paper cards, stamp books, and manual fine ledgers with a fast, secure,
+                and friendly system everyone can use in seconds.
+              </p>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li className="flex items-start gap-2">
+                  <span>🪪</span>
+                  <span><strong className="text-slate-200">QR access</strong> — members scan their card at the desk to sign in and borrow.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span>📚</span>
+                  <span><strong className="text-slate-200">Borrow &amp; return</strong> — live tracking for every book copy.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span>📖</span>
+                  <span><strong className="text-slate-200">E-books &amp; fines</strong> — read online and manage payments in one place.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-white font-bold mb-3">Quick Links</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <button onClick={() => scrollTo('home')} className="hover:text-white transition">🏠 Home</button>
+                </li>
+                <li>
+                  <button onClick={() => scrollTo('about')} className="hover:text-white transition">📖 About Us</button>
+                </li>
+                <li>
+                  <button onClick={() => scrollTo('features')} className="hover:text-white transition">✨ Features</button>
+                </li>
+                <li>
+                  <button onClick={() => scrollTo('cta')} className="hover:text-white transition">🚀 Get Started</button>
+                </li>
+                <li>
+                  <Link to="/login" className="hover:text-white transition">🔑 Sign In</Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Library Info */}
+            <div>
+              <h4 className="text-white font-bold mb-3">Library Info</h4>
+              <ul className="space-y-3 text-sm text-slate-400">
+                <li className="flex items-start gap-2">
+                  <span>🏫</span>
+                  <span><strong className="text-slate-200">Who we serve</strong><br />Students, teachers, and guests of Hope Haven School.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span>🕐</span>
+                  <span><strong className="text-slate-200">Open</strong><br />On all school days — scan your QR card at the desk to borrow.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span>💬</span>
+                  <span><strong className="text-slate-200">Need help?</strong><br />Visit the library desk or use “Account Requests” to sign up.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <img src="/hope-logo.png" alt="Hope Haven School Library" className="w-9 h-9 object-contain" />
+              <img src="/hope-logo.png" alt="Hope Haven School Library" className="w-8 h-8 object-contain" />
               <div>
-                <div className="font-bold text-white">Hope Haven School Library</div>
+                <div className="font-bold text-white text-sm">Hope Haven School Library</div>
                 <div className="text-xs text-slate-500">Smart Library Management System</div>
               </div>
             </div>

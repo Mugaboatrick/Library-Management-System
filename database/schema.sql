@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS ebooks (
   file_path VARCHAR(500),
   file_size BIGINT,
   format VARCHAR(10),  -- PDF | EPUB
+  is_protected TINYINT(1) DEFAULT 0,  -- 1 = DRM-protected: students can read online but cannot download or copy
   cover_image VARCHAR(500),
   uploaded_by INT,
   status VARCHAR(20) DEFAULT 'ACTIVE',

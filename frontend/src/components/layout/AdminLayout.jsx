@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from './Sidebar';
+import AdminNavbar from './AdminNavbar';
 import { connectSocket } from '../../services/socket';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 const AdminLayout = ({ children }) => {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -44,35 +43,18 @@ const AdminLayout = ({ children }) => {
   const clearNotifications = () => setNotifications([]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div
+      className="flex min-h-screen bg-gray-50"
+      style={{
+        backgroundImage: "linear-gradient(rgba(15,23,42,0.5), rgba(15,23,42,0.5)), url('/dashboard-bg.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile top bar */}
-        <div className="lg:hidden sticky top-0 z-30 relative overflow-hidden animate-gradient bg-gradient-to-r from-slate-900 via-primary-900 to-primary-800 text-white shadow-md">
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-cyan-400/20 brand-blob"></div>
-          </div>
-          <div className="relative flex items-center gap-3 px-4 h-14">
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Open menu"
-              className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-lg hover:bg-white/20 transition"
-            >
-              ☰
-            </button>
-            <span className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center overflow-hidden">
-              <img src="/hope-logo.png" alt="Hope Haven" className="w-5 h-5 object-contain" />
-            </span>
-            <span className="font-bold text-sm truncate">Hope Haven School Library</span>
-          </div>
-        </div>
+        <AdminNavbar />
 
         {/* Real-time notification bar */}
         {notifications.length > 0 && (
@@ -87,7 +69,7 @@ const AdminLayout = ({ children }) => {
             <button onClick={clearNotifications} className="text-xs text-gray-500 hover:text-gray-700 ml-3">Clear</button>
           </div>
         )}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 animate-fade-up min-w-0">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">{children}</main>
       </div>
     </div>
   );

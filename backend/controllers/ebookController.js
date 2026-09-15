@@ -10,20 +10,22 @@ exports.uploadEbook = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const { title, author, subject, grade_level } = req.body;
+    const { title, author, subject, grade_level, isbn } = req.body;
     if (!title) {
       return res.status(400).json({ success: false, message: 'Title is required' });
     }
+
+    const isProtected = req.body.is_protected === '1' || req.body.is_protected === 'true' || req.body.is_protected === 1;
 
     const cover = req.files?.cover?.[0];
     const format = path.extname(file.originalname).toLowerCase().replace('.', '').toUpperCase();
     const coverPath = cover ? `/uploads/covers/${cover.filename}` : null;
 
     const [result] = await pool.query(
-      `INSERT INTO ebooks (title, author, subject, grade_level, file_path, file_size, format, cover_image, uploaded_by, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE')`,
-      [title, author || null, subject || null, grade_level || null,
-       file.filename, file.size, format, coverPath, req.user.id]
+      `INSERT INTO ebooks (title, author, subject, grade_level, isbn, file_path, file_size, format, is_protected, cover_image, uploaded_by, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE')`,
+      [title, author || null, subject || null, grade_level || null, isbn || null,
+       file.filename, file.size, format, isProtected, coverPath, req.user.id]
     );
 
     await pool.query(
@@ -164,6 +166,15 @@ exports.downloadEbook = async (req, res) => {
     );
     if (rows.length === 0) return res.status(404).json({ success: false, message: 'E-book not found' });
     const ebook = rows[0];
+
+    // DRM-protected ("red") books may NOT be downloaded — read online only.
+    // Only the librarian/admin can download a protected copy for backup/printing.
+    if (Number(ebook.is_protected) === 1 && req.user.role !== 'LIBRARIAN') {
+      return res.status(403).json({
+        success: false,
+        message: 'This book is protected — you can read it online but downloading and copying are not allowed.'
+      });
+    }
 
     const filePath = path.join(__dirname, '..', 'uploads', 'ebooks', path.basename(ebook.file_path));
     if (!fs.existsSync(filePath)) {

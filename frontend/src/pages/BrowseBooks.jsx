@@ -5,6 +5,7 @@ import { bookService, ebookService, borrowService, fineService, publicUrl } from
 import offlineCache from '../services/offlineCache';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import SubjectCover from '../components/common/SubjectCover';
 
 const borrowLimits = { STUDENT: 3, TEACHER: 10, GUEST: 1 };
 const FINE_RATE_PER_DAY = 500;
@@ -211,9 +212,7 @@ const BrowseBooks = () => {
                     />
                   </div>
                 ) : (
-                  <div className="h-44 bg-gradient-to-br from-primary-100 to-blue-100 flex items-center justify-center text-6xl">
-                    📕
-                  </div>
+                  <SubjectCover subject={book.subject || book.category} grade={book.grade_level} title={book.author} />
                 )}
 
                 <div className="p-5 flex flex-col flex-1">

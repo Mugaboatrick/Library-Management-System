@@ -1,8 +1,35 @@
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
 const { pool } = require('../config/db');
 const { generateCustomerId, generateCardNumber } = require('../utils/customerUtils');
 const { generateCustomerQR } = require('../utils/qrGenerator');
 const { getBorrowLimit } = require('../utils/fineUtils');
+
+const removeQRCardFiles = async (cards) => {
+  for (const card of cards) {
+    if (!card.qr_code_url) continue;
+    const filename = path.basename(card.qr_code_url);
+    const filePath = path.join(__dirname, '..', 'uploads', 'qrcards', filename);
+    try {
+      await fs.promises.unlink(filePath);
+    } catch (err) {
+      if (err.code !== 'ENOENT') console.error('Failed to delete QR image file:', err);
+    }
+  }
+};
+
+// Remove QR cards that are no longer active, including their image files.
+exports.cleanupDeletedQRCards = async () => {
+  const [cards] = await pool.query(
+    `SELECT id, qr_code_url FROM customer_cards WHERE status <> 'ACTIVE'`
+  );
+  await removeQRCardFiles(cards);
+  if (cards.length > 0) {
+    await pool.query(`DELETE FROM customer_cards WHERE status <> 'ACTIVE'`);
+    console.log(`Removed ${cards.length} deleted QR card(s)`);
+  }
+};
 
 // List all users with optional role filter
 exports.listUsers = async (req, res) => {
@@ -59,7 +86,9 @@ exports.getUser = async (req, res) => {
     if (rows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
 
     const [cards] = await pool.query(
-      `SELECT * FROM customer_cards WHERE user_id = ? ORDER BY id DESC LIMIT 1`, [id]
+      `SELECT * FROM customer_cards
+       WHERE user_id = ? AND status = 'ACTIVE'
+       ORDER BY id DESC LIMIT 1`, [id]
     );
 
     const [borrowings] = await pool.query(
@@ -220,10 +249,14 @@ exports.regenerateQR = async (req, res) => {
       [parseInt(user_id), cardNumber, qr.url, qr.data]
     );
 
-    // Deactivate old cards
-    await pool.query(
-      `UPDATE customer_cards SET status = 'REPLACED'
+    const [oldCards] = await pool.query(
+      `SELECT id, qr_code_url FROM customer_cards
        WHERE user_id = ? AND id != ?`, [parseInt(user_id), result.insertId]
+    );
+    await removeQRCardFiles(oldCards);
+    await pool.query(
+      `DELETE FROM customer_cards WHERE user_id = ? AND id != ?`,
+      [parseInt(user_id), result.insertId]
     );
 
     await pool.query(
@@ -246,9 +279,10 @@ exports.regenerateQR = async (req, res) => {
 exports.deleteCard = async (req, res) => {
   try {
     const { id, cardId } = req.params;
-    const [card] = await pool.query('SELECT id, user_id FROM customer_cards WHERE id = ? AND user_id = ?', [cardId, id]);
+    const [card] = await pool.query('SELECT id, qr_code_url FROM customer_cards WHERE id = ? AND user_id = ?', [cardId, id]);
     if (card.length === 0) return res.status(404).json({ success: false, message: 'Card not found' });
 
+    await removeQRCardFiles(card);
     await pool.query('DELETE FROM customer_cards WHERE id = ?', [cardId]);
 
     await pool.query(
@@ -324,4 +358,91 @@ exports.getBorrowLimitInfo = (req, res) => {
       GUEST: getBorrowLimit('GUEST')
     }
   });
+};
+
+// Librarian resets another user's password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+    }
+
+    const [exist] = await pool.query('SELECT id, role FROM users WHERE id = ?', [id]);
+    if (exist.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const hashed = await bcrypt.hash(password, 10);
+    await pool.query('UPDATE users SET password = ? WHERE id = ?', [hashed, id]);
+
+    await pool.query(
+      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details)
+       VALUES (?, 'PASSWORD_RESET', 'USER', ?, ?)`,
+      [req.user.id, id, `Password reset for user ${id}`]
+    );
+
+    res.json({ success: true, message: 'Password has been reset successfully' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// Librarian deletes a member account (blocked if borrowings or unpaid fines exist)
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (Number(id) === Number(req.user.id)) {
+      return res.status(400).json({ success: false, message: 'You cannot delete your own account while signed in' });
+    }
+
+    const [rows] = await pool.query(
+      'SELECT id, role, customer_id FROM users WHERE id = ?', [id]
+    );
+    if (rows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
+    if (rows[0].role === 'LIBRARIAN') {
+      return res.status(400).json({ success: false, message: 'Librarian accounts cannot be deleted' });
+    }
+
+    const [borrows] = await pool.query(
+      `SELECT COUNT(*) AS n FROM borrowings WHERE user_id = ? AND status IN ('BORROWED','OVERDUE')`, [id]
+    );
+    if (borrows[0].n > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `This member has ${borrows[0].n} active borrowing(s) — block the account instead of deleting.`
+      });
+    }
+
+    const [fines] = await pool.query(
+      `SELECT COALESCE(SUM(amount), 0) AS balance FROM fines WHERE user_id = ? AND status = 'UNPAID'`, [id]
+    );
+    if (fines[0].balance > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'This member has unpaid fines — block the account instead of deleting.'
+      });
+    }
+
+    const [cards] = await pool.query('SELECT qr_code_url FROM customer_cards WHERE user_id = ?', [id]);
+    await removeQRCardFiles(cards);
+    await pool.query('DELETE FROM customer_cards WHERE user_id = ?', [id]);
+    await pool.query('DELETE FROM audit_logs WHERE user_id = ?', [id]);
+    await pool.query('DELETE FROM returns WHERE user_id = ?', [id]);
+    await pool.query('DELETE FROM payments WHERE user_id = ?', [id]);
+    await pool.query('DELETE FROM users WHERE id = ?', [id]);
+
+    await pool.query(
+      `INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details)
+       VALUES (?, 'USER_DELETED', 'USER', ?, ?)`,
+      [req.user.id, id, `${rows[0].customer_id} deleted by librarian`]
+    );
+
+    res.json({ success: true, message: 'Account deleted successfully' });
+  } catch (err) {
+    console.error('Delete user error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
 };

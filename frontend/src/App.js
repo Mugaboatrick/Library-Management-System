@@ -8,6 +8,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import Spinner from './components/common/Spinner';
 
 import Login from './pages/auth/Login';
+import AdminLogin from './pages/auth/AdminLogin';
 import Register from './pages/auth/Register';
 import Landing from './pages/Landing';
 
@@ -44,6 +45,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/login/admin" element={<AdminLogin />} />
       <Route path="/register" element={<Register />} />
 
       {/* Admin routes */}

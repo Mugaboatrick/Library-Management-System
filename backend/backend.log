@@ -1,0 +1,214 @@
+
+> hope-haven-library-backend@1.0.0 dev
+> nodemon server.js
+
+[33m[nodemon] 3.1.14[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,cjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+Delete user error: Error: Unknown column 'total_amount' in 'field list'
+    at exports.deleteUser (C:\Users\PatrickMugabo\Documents\part\backend\controllers\userController.js:385:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'total_amount' in 'field list'",
+  sql: "SELECT COALESCE(SUM(total_amount - amount_paid), 0) AS balance FROM fines WHERE user_id = '19'"
+}
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node server.js`[39m
+
+==============================
+Hope Haven Library API running on http://localhost:5000
+==============================
+
+✔ Cron jobs scheduled (daily fine calculation at 00:00)
+✔ MySQL connected successfully
+Unhandled error: SyntaxError: Unexpected token 's', "status=BLO"... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\types\json.js:169:10)
+    at parse (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\types\json.js:90:15)
+    at C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+    at invokeCallback (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1736:12) {
+  expose: true,
+  statusCode: 400,
+  status: 400,
+  body: 'status=BLOCKED&reason=test',
+  type: 'entity.parse.failed'
+}
+Unhandled error: SyntaxError: Unexpected token 's', "status=ACTIVE" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\types\json.js:169:10)
+    at parse (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\types\json.js:90:15)
+    at C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+    at invokeCallback (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1736:12) {
+  expose: true,
+  statusCode: 400,
+  status: 400,
+  body: 'status=ACTIVE',
+  type: 'entity.parse.failed'
+}
+Unhandled error: SyntaxError: Unexpected token 'p', "password=newpass99" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at createStrictSyntaxError (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\types\json.js:169:10)
+    at parse (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\types\json.js:90:15)
+    at C:\Users\PatrickMugabo\Documents\part\backend\node_modules\body-parser\lib\read.js:128:18
+    at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+    at invokeCallback (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:238:16)
+    at done (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:227:7)
+    at IncomingMessage.onEnd (C:\Users\PatrickMugabo\Documents\part\backend\node_modules\raw-body\index.js:287:7)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1736:12) {
+  expose: true,
+  statusCode: 400,
+  status: 400,
+  body: 'password=newpass99',
+  type: 'entity.parse.failed'
+}

@@ -5,6 +5,7 @@ const fs = require('fs');
 const { pool } = require('../config/db');
 const { generateCustomerId, generateCardNumber } = require('../utils/customerUtils');
 const { generateCustomerQR, decryptPayload } = require('../utils/qrGenerator');
+const settingsController = require('./settingsController');
 
 // Register a new user (student/teacher register themselves; guest created by librarian)
 exports.register = async (req, res) => {
@@ -100,6 +101,15 @@ exports.login = async (req, res) => {
       return res.status(403).json({
         success: false,
         message: `Account blocked: ${user.blocked_reason || 'Outstanding fines'}`
+      });
+    }
+
+    // Email & password sign-in for members is only allowed when the library
+    // manager has granted it (librarians always have email login).
+    if (user.role !== 'LIBRARIAN' && !settingsController.isEmailLoginAllowed()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Email & password login is disabled. Sign in by scanning your QR card.'
       });
     }
 
