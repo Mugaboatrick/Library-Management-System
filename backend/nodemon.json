@@ -1,0 +1,5 @@
+{
+  "watch": ["server.js", "config", "controllers", "routes", "middleware", "utils", "cron", "socket"],
+  "ext": "js,json",
+  "ignore": ["uploads/*", "error-diag.log", "node_modules/*"]
+}

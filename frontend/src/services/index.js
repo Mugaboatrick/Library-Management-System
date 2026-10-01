@@ -18,6 +18,8 @@ export const authService = {
 export const userService = {
   list: (params) => api.get('/users', { params }),
   get: (id) => api.get(`/users/${id}`),
+  librarian: () => api.get('/users/librarian'),
+  librarians: () => api.get('/users/librarians'),
   create: (data) => api.post('/users', data),
   update: (id, data) => api.put(`/users/${id}`, data),
   block: (id, data) => api.put(`/users/${id}/block`, data),
@@ -32,12 +34,29 @@ export const userService = {
 export const bookService = {
   list: (params) => api.get('/books', { params }),
   get: (id) => api.get(`/books/${id}`),
+  resolveScan: (code) => api.get('/books/resolve-scan', { params: { code } }),
   create: (data) => api.post('/books', data),
   update: (id, data) => api.put(`/books/${id}`, data),
   addCopies: (id, data) => api.post(`/books/${id}/copies`, data),
+  setCopyCode: (copyId, copyCode) => api.put(`/books/copies/${copyId}/code`, { copy_code: copyCode }),
+  remove: (id) => api.delete(`/books/${id}`),
   retire: (id, data) => api.put(`/books/retire/${id}`, data),
+  retireAll: (id, data) => api.put(`/books/retire-all/${id}`, data),
   retired: () => api.get('/books/retired'),
-  categories: () => api.get('/books/categories')
+  categories: () => api.get('/books/categories'),
+  sections: () => api.get('/books/sections')
+};
+
+export const categoryService = {
+  list: () => api.get('/categories'),
+  categories: () => api.get('/categories/list'),
+  create: (data) => api.post('/categories', data),
+  update: (id, data) => api.put(`/categories/${id}`, data),
+  remove: (id) => api.delete(`/categories/${id}`),
+  subjects: (categoryId) => api.get(`/categories/${categoryId}/subjects`),
+  addSubject: (categoryId, data) => api.post(`/categories/${categoryId}/subjects`, data),
+  updateSubject: (categoryId, subjectId, data) => api.put(`/categories/${categoryId}/subjects/${subjectId}`, data),
+  removeSubject: (categoryId, subjectId) => api.delete(`/categories/${categoryId}/subjects/${subjectId}`)
 };
 
 export const borrowService = {
@@ -45,7 +64,9 @@ export const borrowService = {
   returnBook: (data) => api.post('/borrowings/return', data),
   returnMyBook: (data) => api.post('/borrowings/return-my', data),
   list: (params) => api.get('/borrowings', { params }),
-  mine: () => api.get('/borrowings/mine')
+  mine: () => api.get('/borrowings/mine'),
+  approve: (id) => api.post(`/borrowings/${id}/approve`),
+  reject: (id) => api.post(`/borrowings/${id}/reject`)
 };
 
 export const fineService = {
@@ -60,9 +81,11 @@ export const fineService = {
 
 export const ebookService = {
   list: (params) => api.get('/ebooks', { params }),
-  read: (id) => `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/ebooks/${id}/read`,
-  download: (id) => `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/ebooks/${id}/download`,
+  read: (id) => `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/ebooks/${id}/read`,
+  download: (id) => `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/ebooks/${id}/download`,
   upload: (formData) => api.post('/ebooks', formData),
+  update: (id, data) => api.put(`/ebooks/${id}`, data),
+  setAccessMode: (id, data) => api.put(`/ebooks/${id}/access-mode`, data),
   remove: (id) => api.delete(`/ebooks/${id}`),
   myBookmarks: () => api.get('/ebooks/bookmarks/mine'),
   addBookmark: (data) => api.post('/ebooks/bookmarks', data),
@@ -90,4 +113,19 @@ export const accountRequestService = {
   list: (params) => api.get('/account-requests', { params }),
   updateStatus: (id, data) => api.put(`/account-requests/${id}`, data),
   remove: (id) => api.delete(`/account-requests/${id}`)
+};
+
+export const notificationService = {
+  mine: (params) => api.get('/notifications', { params }),
+  markRead: (id) => api.post(`/notifications/${id}/read`),
+  markAllRead: () => api.post('/notifications/read-all')
+};
+
+export const messageService = {
+  inbox: () => api.get('/messages/inbox'),
+  sent: () => api.get('/messages/sent'),
+  send: (data) => api.post('/messages', data),
+  markRead: (id) => api.post(`/messages/${id}/read`),
+  markAllRead: () => api.post('/messages/read-all'),
+  remove: (id) => api.delete(`/messages/${id}`)
 };

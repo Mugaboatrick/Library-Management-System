@@ -1,21 +1,34 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../services';
+import { disconnectSocket } from '../services/socket';
+import { authStorage } from '../services/authStorage';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(authStorage.getToken());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = authStorage.getUser();
     if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        localStorage.removeItem('user');
-      }
+      setUser(storedUser);
+    }
+    // Always re-sync the profile from the server so fresh data (e.g. a newly
+    // uploaded profile picture) shows up even when the saved user is stale.
+    const token = authStorage.getToken();
+    if (token) {
+      authService.getMe()
+        .then((res) => {
+          const fresh = res.data.user;
+          const merged = { ...(storedUser || {}), ...fresh };
+          authStorage.setUser(merged);
+          setUser(merged);
+        })
+        .catch(() => {
+          // token may be expired — the stored user is still used
+        });
     }
     setLoading(false);
   }, []);
@@ -23,8 +36,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const res = await authService.login({ email, password });
     const { token: newToken, user: newUser } = res.data;
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(newUser));
+    authStorage.setToken(newToken);
+    authStorage.setUser(newUser);
     setToken(newToken);
     setUser(newUser);
     return newUser;
@@ -33,8 +46,8 @@ export const AuthProvider = ({ children }) => {
   const loginQR = async (qrCode) => {
     const res = await authService.loginQR({ qr_code: qrCode });
     const { token: newToken, user: newUser } = res.data;
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(newUser));
+    authStorage.setToken(newToken);
+    authStorage.setUser(newUser);
     setToken(newToken);
     setUser(newUser);
     return newUser;
@@ -46,11 +59,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    authStorage.removeToken();
+    authStorage.removeUser();
     sessionStorage.removeItem('loginCredentials');
     setToken(null);
     setUser(null);
+    disconnectSocket();
   };
 
   const refreshMe = async () => {
@@ -59,7 +73,7 @@ export const AuthProvider = ({ children }) => {
       const res = await authService.getMe();
       const fresh = res.data.user;
       const merged = { ...user, ...fresh };
-      localStorage.setItem('user', JSON.stringify(merged));
+      authStorage.setUser(merged);
       setUser(merged);
       return merged;
     } catch (e) {

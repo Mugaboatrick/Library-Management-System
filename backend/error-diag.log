@@ -1,0 +1,504 @@
+2026-09-28T07:07:14.975Z [401] GET /api/ebooks 3ms auth=no
+2026-09-28T07:13:36.969Z [500] POST /api/ebooks 860ms auth=yes
+2026-09-28T07:25:22.762Z [UPLOAD-ERR] Column count doesn't match value count at row 1 | sql=INSERT INTO ebooks (title, author, subject, section, grade_level, isbn, qr_code, file_path, file_size, format, is_protected, access_mode, cover_image, uploaded_by, status)
+       VALUES ('Biology S1', 'Biology S1', 'nesa', 'Biology', 'CCB', 'S1', NULL, NULL, '1790580321863_7742d36e-747c-4bf6-a0c6-464035fbd802.pdf', 56987988, 'PDF', 1, 'READ_ONLY', '/uploads/covers/1790580322731_230283d4-0fa7-490a-
+2026-09-28T07:25:22.798Z [500] POST /api/ebooks 944ms auth=yes body={"title":["Biology S1","Biology S1"],"author":"nesa","subject":"Biology","section":"CCB","grade_level":"S1","access_mode":"READ_ONLY"}
+2026-09-28T07:26:01.168Z [UPLOAD-ERR] Column count doesn't match value count at row 1 | sql=INSERT INTO ebooks (title, author, subject, section, grade_level, isbn, qr_code, file_path, file_size, format, is_protected, access_mode, cover_image, uploaded_by, status)
+       VALUES ('Biology S1', 'Biology S1', 'nesa', 'Biology', 'CCB', 'S1', NULL, NULL, '1790580359924_92ea4c7c-371a-4098-b4a9-68d7021d133c.pdf', 56987988, 'PDF', 1, 'READ_ONLY', '/uploads/covers/1790580361144_9cab90b6-d1e8-42ae-
+2026-09-28T07:26:01.174Z [500] POST /api/ebooks 1290ms auth=yes body={"title":["Biology S1","Biology S1"],"author":"nesa","subject":"Biology","section":"CCB","grade_level":"S1","access_mode":"READ_ONLY"}
+2026-09-28T07:48:36.922Z [401] POST /api/books 2ms auth=yes body={"title":"BarcodeTest","author":"A","category":"General","section":"Biology","shelf_location":"Shelf B3","copies":1,"first_copy_code":"BK-TEST-GS1"}
+2026-09-28T12:40:14.313Z [409] DELETE /api/books/3 10ms auth=yes
+2026-09-28T12:40:16.516Z [409] DELETE /api/books/3 9ms auth=yes
+2026-09-28T12:40:29.649Z [409] DELETE /api/books/3 7ms auth=yes
+2026-09-28T13:57:22.202Z [401] GET /api/books/resolve-scan?code=ZZ-LIVE-4242 4ms auth=no
+2026-09-28T13:57:22.227Z [404] GET /api/books/resolve-scan?code=1 6ms auth=yes
+2026-09-28T13:57:22.256Z [400] GET /api/books/resolve-scan 4ms auth=yes
+2026-09-28T14:04:01.601Z [401] GET /api/books/resolve-scan?code=ZZ-LIVE-4242 1ms auth=no
+2026-09-28T14:04:01.641Z [404] GET /api/books/resolve-scan?code=1 5ms auth=yes
+2026-09-28T14:04:01.672Z [400] GET /api/books/resolve-scan 2ms auth=yes
+2026-09-28T14:06:57.250Z [404] GET /api/books/resolve-scan?code=STU0002 9ms auth=yes
+2026-09-28T14:07:08.119Z [404] GET /api/books/resolve-scan?code=STU0002 9ms auth=yes
+2026-09-28T14:07:40.913Z [404] GET /api/books/resolve-scan?code=STU0002 10ms auth=yes
+2026-09-28T14:19:41.436Z [404] GET /api/books/resolve-scan?code=STU0002 8ms auth=yes
+2026-09-29T06:50:11.681Z [409] DELETE /api/books/10 19ms auth=yes
+2026-09-29T06:50:19.992Z [409] DELETE /api/books/9 4ms auth=yes
+2026-09-29T06:50:35.299Z [409] DELETE /api/books/3 5ms auth=yes
+2026-09-29T07:11:15.212Z [409] DELETE /api/books/10 15ms auth=yes
+2026-09-29T07:11:19.225Z [409] DELETE /api/books/9 8ms auth=yes
+2026-09-29T07:11:23.447Z [409] DELETE /api/books/3 6ms auth=yes
+2026-09-29T07:11:26.530Z [409] DELETE /api/books/11 7ms auth=yes
+2026-09-29T07:33:33.560Z [401] GET /api/books/resolve-scan?code=X 19ms auth=no
+2026-09-29T07:37:34.623Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 11ms auth=yes
+2026-09-29T07:37:34.652Z [400] POST /api/borrowings/borrow 7ms auth=yes body={"copy_code":"BOOK012-C1"}
+2026-09-29T07:40:17.305Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 8ms auth=yes
+2026-09-29T08:21:02.526Z [409] DELETE /api/books/3 29ms auth=yes
+2026-09-29T08:36:36.995Z [401] GET /api/books 8ms auth=no
+2026-09-29T08:37:28.691Z [409] DELETE /api/books/16 9ms auth=yes
+2026-09-29T08:37:28.811Z [409] DELETE /api/books/16 7ms auth=yes
+2026-09-29T08:37:28.883Z [400] PUT /api/books/retire-all/16 17ms auth=yes body={"reason":"LOST"}
+2026-09-29T08:37:28.912Z [400] PUT /api/books/retire-all/16 11ms auth=yes body={"reason":"NONSENSE"}
+2026-09-29T08:37:29.012Z [409] PUT /api/books/retire-all/17 7ms auth=yes body={"reason":"DAMAGED"}
+2026-09-29T08:38:01.068Z [409] DELETE /api/books/19 8ms auth=yes
+2026-09-29T08:38:01.183Z [409] DELETE /api/books/19 8ms auth=yes
+2026-09-29T08:38:01.270Z [400] PUT /api/books/retire-all/19 10ms auth=yes body={"reason":"LOST"}
+2026-09-29T08:38:01.282Z [400] PUT /api/books/retire-all/19 6ms auth=yes body={"reason":"NONSENSE"}
+2026-09-29T08:38:01.381Z [409] PUT /api/books/retire-all/20 4ms auth=yes body={"reason":"DAMAGED"}
+2026-09-29T09:47:37.474Z [401] GET /api/books 2ms auth=no
+2026-09-29T10:08:50.008Z [401] POST /api/auth/login 2ms auth=no body={"email":"admin@hopelibrary.com","password":"Admin@123"}
+2026-09-29T10:10:06.118Z [404] GET /api/books/resolve-scan?code=HH1%7CBOOK999-C1%7CA%20Very%20Long%20Title%20That%20Goes%20On%7CDr.%20Someone%7CCategory%7CSubject%7CS1%7CShelf%20A1 10ms auth=yes
+2026-09-29T10:10:06.129Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T10:13:39.729Z [404] GET /api/books/resolve-scan?code=HH1%7CBOOK999-C1%7CA%20Very%20Long%20Title%20That%20Goes%20On%7CDr.%20Someone%7CCategory%7CSubject%7CS1%7CShelf%20A1 7ms auth=yes
+2026-09-29T10:13:39.744Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T10:16:50.398Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 11ms auth=yes
+2026-09-29T10:20:10.484Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 8ms auth=yes
+2026-09-29T12:01:52.204Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T12:02:04.726Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T12:45:32.124Z [400] POST /api/auth/login 2ms auth=no body={"username":"admin","password":"admin123"}
+2026-09-29T12:50:49.058Z [400] PUT /api/books/copies/121/code 13ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T12:50:49.118Z [400] PUT /api/books/copies/121/code 4ms auth=yes body={"copy_code":"   "}
+2026-09-29T12:50:49.130Z [400] PUT /api/books/copies/121/code 5ms auth=yes
+2026-09-29T12:50:49.155Z [404] PUT /api/books/copies/999999999/code 9ms auth=yes body={"copy_code":"97807195331374"}
+2026-09-29T12:50:49.168Z [400] PUT /api/books/copies/abc/code 5ms auth=yes body={"copy_code":"97807195331374"}
+2026-09-29T12:50:49.201Z [404] GET /api/books/resolve-scan?code=BOOK035-C1 7ms auth=yes
+2026-09-29T12:50:49.285Z [409] PUT /api/books/copies/122/code 10ms auth=yes body={"copy_code":"97807195331374"}
+2026-09-29T12:50:49.428Z [404] GET /api/books/resolve-scan?code=97807195331374 13ms auth=yes
+2026-09-29T12:50:49.445Z [403] POST /api/borrowings/return 3ms auth=yes body={"copy_code":"97807195331374"}
+2026-09-29T12:50:49.466Z [404] GET /api/books/resolve-scan?code=97807195331374 12ms auth=yes
+2026-09-29T12:50:49.534Z [403] PUT /api/books/copies/122/code 5ms auth=yes body={"copy_code":"97802620338374X"}
+2026-09-29T12:50:49.590Z [409] DELETE /api/books/35 14ms auth=yes
+2026-09-29T12:54:55.171Z [400] PUT /api/books/copies/123/code 3ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T12:54:55.235Z [400] PUT /api/books/copies/123/code 1ms auth=yes body={"copy_code":"   "}
+2026-09-29T12:54:55.254Z [400] PUT /api/books/copies/123/code 2ms auth=yes
+2026-09-29T12:54:55.273Z [404] PUT /api/books/copies/999999999/code 5ms auth=yes body={"copy_code":"97807195331870"}
+2026-09-29T12:54:55.280Z [400] PUT /api/books/copies/abc/code 2ms auth=yes body={"copy_code":"97807195331870"}
+2026-09-29T12:54:55.433Z [404] GET /api/books/resolve-scan?code=BOOK037-C1 4ms auth=yes
+2026-09-29T12:54:55.481Z [409] PUT /api/books/copies/124/code 4ms auth=yes body={"copy_code":"97807195331870"}
+2026-09-29T12:54:55.496Z [400] POST /api/borrowings/borrow 3ms auth=yes body={"copy_code":"97807195331870","due_days":14}
+2026-09-29T12:54:55.564Z [404] GET /api/books/resolve-scan?code=97807195331870 13ms auth=yes
+2026-09-29T12:54:55.575Z [404] POST /api/borrowings/return 6ms auth=yes body={"copy_code":"97807195331870"}
+2026-09-29T12:54:55.588Z [404] GET /api/books/resolve-scan?code=97807195331870 8ms auth=yes
+2026-09-29T12:54:55.621Z [400] POST /api/borrowings/borrow 2ms auth=yes body={"copy_code":"97802620338870","due_days":14}
+2026-09-29T12:54:55.638Z [404] POST /api/borrowings/return 4ms auth=yes body={"copy_code":"97802620338870"}
+2026-09-29T12:54:55.652Z [403] PUT /api/books/copies/124/code 2ms auth=yes body={"copy_code":"97802620338870X"}
+2026-09-29T12:54:55.666Z [401] PUT /api/books/copies/124/code 0ms auth=no body={"copy_code":"97802620338870X"}
+2026-09-29T12:54:55.683Z [401] GET /api/books/resolve-scan?code=97802620338870X 1ms auth=no
+2026-09-29T12:54:55.734Z [409] DELETE /api/books/37 4ms auth=yes
+2026-09-29T12:54:55.782Z [409] DELETE /api/books/38 5ms auth=yes
+2026-09-29T12:57:30.162Z [400] PUT /api/books/copies/125/code 2ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T12:57:30.226Z [400] PUT /api/books/copies/125/code 3ms auth=yes body={"copy_code":"   "}
+2026-09-29T12:57:30.241Z [400] PUT /api/books/copies/125/code 1ms auth=yes
+2026-09-29T12:57:30.261Z [404] PUT /api/books/copies/999999999/code 5ms auth=yes body={"copy_code":"97807195331867"}
+2026-09-29T12:57:30.275Z [400] PUT /api/books/copies/abc/code 3ms auth=yes body={"copy_code":"97807195331867"}
+2026-09-29T12:57:30.324Z [404] GET /api/books/resolve-scan?code=BOOK039-C1 5ms auth=yes
+2026-09-29T12:57:30.389Z [409] PUT /api/books/copies/126/code 6ms auth=yes body={"copy_code":"97807195331867"}
+2026-09-29T12:57:30.487Z [400] POST /api/borrowings/borrow 7ms auth=yes body={"copy_code":"97807195331867","due_days":14}
+2026-09-29T12:57:30.502Z [409] PUT /api/books/copies/125/code 5ms auth=yes body={"copy_code":"97802620338867"}
+2026-09-29T12:57:30.664Z [403] PUT /api/books/copies/126/code 3ms auth=yes body={"copy_code":"97802620338867X"}
+2026-09-29T12:57:30.677Z [401] PUT /api/books/copies/126/code 0ms auth=no body={"copy_code":"97802620338867X"}
+2026-09-29T12:57:30.693Z [401] GET /api/books/resolve-scan?code=97802620338867X 0ms auth=no
+2026-09-29T12:58:07.010Z [400] PUT /api/books/copies/127/code 2ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T12:58:07.066Z [400] PUT /api/books/copies/127/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-29T12:58:07.082Z [400] PUT /api/books/copies/127/code 2ms auth=yes
+2026-09-29T12:58:07.100Z [404] PUT /api/books/copies/999999999/code 3ms auth=yes body={"copy_code":"97807195331716"}
+2026-09-29T12:58:07.115Z [400] PUT /api/books/copies/abc/code 2ms auth=yes body={"copy_code":"97807195331716"}
+2026-09-29T12:58:07.147Z [404] GET /api/books/resolve-scan?code=BOOK041-C1 3ms auth=yes
+2026-09-29T12:58:07.201Z [409] PUT /api/books/copies/128/code 6ms auth=yes body={"copy_code":"97807195331716"}
+2026-09-29T12:58:07.281Z [400] POST /api/borrowings/borrow 7ms auth=yes body={"copy_code":"97807195331716","due_days":14}
+2026-09-29T12:58:07.295Z [409] PUT /api/books/copies/127/code 5ms auth=yes body={"copy_code":"97802620338716"}
+2026-09-29T12:58:07.447Z [403] PUT /api/books/copies/128/code 1ms auth=yes body={"copy_code":"97802620338716X"}
+2026-09-29T12:58:07.461Z [401] PUT /api/books/copies/128/code 0ms auth=no body={"copy_code":"97802620338716X"}
+2026-09-29T12:58:07.477Z [401] GET /api/books/resolve-scan?code=97802620338716X 1ms auth=no
+2026-09-29T13:03:08.701Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 3ms auth=yes
+2026-09-29T13:03:29.214Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 3ms auth=yes
+2026-09-29T14:13:39.645Z [404] GET /api/books/resolve-scan?code=97807195331312 10ms auth=yes
+2026-09-29T14:14:00.055Z [400] PUT /api/books/copies/140/code 1ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T14:14:00.105Z [400] PUT /api/books/copies/140/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-29T14:14:00.120Z [400] PUT /api/books/copies/140/code 2ms auth=yes
+2026-09-29T14:14:00.138Z [404] PUT /api/books/copies/999999999/code 3ms auth=yes body={"copy_code":"97807195331713"}
+2026-09-29T14:14:00.155Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331713"}
+2026-09-29T14:14:00.254Z [404] GET /api/books/resolve-scan?code=BOOK051-C1 5ms auth=yes
+2026-09-29T14:14:00.324Z [409] PUT /api/books/copies/141/code 5ms auth=yes body={"copy_code":"97807195331713"}
+2026-09-29T14:14:00.403Z [400] POST /api/borrowings/borrow 5ms auth=yes body={"copy_code":"97807195331713","due_days":14}
+2026-09-29T14:14:00.418Z [409] PUT /api/books/copies/140/code 4ms auth=yes body={"copy_code":"97802620338713"}
+2026-09-29T14:14:00.578Z [403] PUT /api/books/copies/141/code 2ms auth=yes body={"copy_code":"97802620338713X"}
+2026-09-29T14:14:00.592Z [401] PUT /api/books/copies/141/code 0ms auth=no body={"copy_code":"97802620338713X"}
+2026-09-29T14:14:00.608Z [401] GET /api/books/resolve-scan?code=97802620338713X 1ms auth=no
+2026-09-29T14:14:21.340Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T14:14:22.171Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T14:29:46.868Z [400] PUT /api/books/copies/148/code 2ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T14:29:46.915Z [400] PUT /api/books/copies/148/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-29T14:29:46.922Z [400] PUT /api/books/copies/148/code 2ms auth=yes
+2026-09-29T14:29:46.928Z [404] PUT /api/books/copies/999999999/code 3ms auth=yes body={"copy_code":"97807195331732"}
+2026-09-29T14:29:46.934Z [400] PUT /api/books/copies/abc/code 2ms auth=yes body={"copy_code":"97807195331732"}
+2026-09-29T14:29:47.011Z [404] GET /api/books/resolve-scan?code=BOOK057-C1 5ms auth=yes
+2026-09-29T14:29:47.074Z [409] PUT /api/books/copies/149/code 5ms auth=yes body={"copy_code":"97807195331732"}
+2026-09-29T14:29:47.170Z [400] POST /api/borrowings/borrow 8ms auth=yes body={"copy_code":"97807195331732","due_days":14}
+2026-09-29T14:29:47.183Z [409] PUT /api/books/copies/148/code 5ms auth=yes body={"copy_code":"97802620338732"}
+2026-09-29T14:29:47.349Z [403] PUT /api/books/copies/149/code 2ms auth=yes body={"copy_code":"97802620338732X"}
+2026-09-29T14:29:47.352Z [401] PUT /api/books/copies/149/code 0ms auth=no body={"copy_code":"97802620338732X"}
+2026-09-29T14:29:47.364Z [401] GET /api/books/resolve-scan?code=97802620338732X 1ms auth=no
+2026-09-29T14:29:48.081Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 4ms auth=yes
+2026-09-29T14:29:48.783Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 3ms auth=yes
+2026-09-29T15:40:25.082Z [400] PUT /api/books/copies/156/code 11ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T15:40:25.293Z [400] PUT /api/books/copies/156/code 7ms auth=yes body={"copy_code":"   "}
+2026-09-29T15:40:25.303Z [400] PUT /api/books/copies/156/code 4ms auth=yes
+2026-09-29T15:40:25.326Z [404] PUT /api/books/copies/999999999/code 7ms auth=yes body={"copy_code":"97807195331494"}
+2026-09-29T15:40:25.344Z [400] PUT /api/books/copies/abc/code 6ms auth=yes body={"copy_code":"97807195331494"}
+2026-09-29T15:40:25.451Z [404] GET /api/books/resolve-scan?code=BOOK063-C1 7ms auth=yes
+2026-09-29T15:40:25.598Z [409] PUT /api/books/copies/157/code 13ms auth=yes body={"copy_code":"97807195331494"}
+2026-09-29T15:40:25.870Z [400] POST /api/borrowings/borrow 14ms auth=yes body={"copy_code":"97807195331494","due_days":14}
+2026-09-29T15:40:25.884Z [409] PUT /api/books/copies/156/code 7ms auth=yes body={"copy_code":"97802620338494"}
+2026-09-29T15:40:26.109Z [403] PUT /api/books/copies/157/code 3ms auth=yes body={"copy_code":"97802620338494X"}
+2026-09-29T15:40:26.117Z [401] PUT /api/books/copies/157/code 1ms auth=no body={"copy_code":"97802620338494X"}
+2026-09-29T15:40:26.123Z [401] GET /api/books/resolve-scan?code=97802620338494X 2ms auth=no
+2026-09-29T15:41:00.028Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 15ms auth=yes
+2026-09-29T16:24:00.609Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 7ms auth=yes
+2026-09-29T16:24:18.244Z [400] PUT /api/books/copies/164/code 4ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T16:24:18.318Z [400] PUT /api/books/copies/164/code 4ms auth=yes body={"copy_code":"   "}
+2026-09-29T16:24:18.334Z [400] PUT /api/books/copies/164/code 5ms auth=yes
+2026-09-29T16:24:18.352Z [404] PUT /api/books/copies/999999999/code 7ms auth=yes body={"copy_code":"97807195331396"}
+2026-09-29T16:24:18.365Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331396"}
+2026-09-29T16:24:18.413Z [404] GET /api/books/resolve-scan?code=BOOK071-C1 8ms auth=yes
+2026-09-29T16:24:18.498Z [409] PUT /api/books/copies/165/code 9ms auth=yes body={"copy_code":"97807195331396"}
+2026-09-29T16:24:18.608Z [400] POST /api/borrowings/borrow 16ms auth=yes body={"copy_code":"97807195331396","due_days":14}
+2026-09-29T16:24:18.622Z [409] PUT /api/books/copies/164/code 9ms auth=yes body={"copy_code":"97802620338396"}
+2026-09-29T16:24:18.844Z [403] PUT /api/books/copies/165/code 5ms auth=yes body={"copy_code":"97802620338396X"}
+2026-09-29T16:24:18.851Z [401] PUT /api/books/copies/165/code 1ms auth=no body={"copy_code":"97802620338396X"}
+2026-09-29T16:24:18.862Z [401] GET /api/books/resolve-scan?code=97802620338396X 1ms auth=no
+2026-09-29T16:42:19.881Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-29T16:42:21.496Z [400] PUT /api/books/copies/169/code 4ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-29T16:42:21.565Z [400] PUT /api/books/copies/169/code 4ms auth=yes body={"copy_code":"   "}
+2026-09-29T16:42:21.577Z [400] PUT /api/books/copies/169/code 4ms auth=yes
+2026-09-29T16:42:21.597Z [404] PUT /api/books/copies/999999999/code 9ms auth=yes body={"copy_code":"97807195331596"}
+2026-09-29T16:42:21.618Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331596"}
+2026-09-29T16:42:21.755Z [404] GET /api/books/resolve-scan?code=BOOK076-C1 8ms auth=yes
+2026-09-29T16:42:21.817Z [409] PUT /api/books/copies/170/code 10ms auth=yes body={"copy_code":"97807195331596"}
+2026-09-29T16:42:21.927Z [400] POST /api/borrowings/borrow 13ms auth=yes body={"copy_code":"97807195331596","due_days":14}
+2026-09-29T16:42:21.954Z [409] PUT /api/books/copies/169/code 8ms auth=yes body={"copy_code":"97802620338596"}
+2026-09-29T16:42:22.164Z [403] PUT /api/books/copies/170/code 6ms auth=yes body={"copy_code":"97802620338596X"}
+2026-09-29T16:42:22.186Z [401] PUT /api/books/copies/170/code 2ms auth=no body={"copy_code":"97802620338596X"}
+2026-09-29T16:42:22.201Z [401] GET /api/books/resolve-scan?code=97802620338596X 2ms auth=no
+2026-09-30T06:02:05.993Z [400] PUT /api/books/copies/172/code 9ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T06:02:06.065Z [400] PUT /api/books/copies/172/code 3ms auth=yes body={"copy_code":"   "}
+2026-09-30T06:02:06.082Z [400] PUT /api/books/copies/172/code 6ms auth=yes
+2026-09-30T06:02:06.103Z [404] PUT /api/books/copies/999999999/code 10ms auth=yes body={"copy_code":"97807195331668"}
+2026-09-30T06:02:06.111Z [400] PUT /api/books/copies/abc/code 3ms auth=yes body={"copy_code":"97807195331668"}
+2026-09-30T06:02:06.167Z [404] GET /api/books/resolve-scan?code=BOOK079-C1 12ms auth=yes
+2026-09-30T06:02:06.257Z [409] PUT /api/books/copies/173/code 23ms auth=yes body={"copy_code":"97807195331668"}
+2026-09-30T06:02:06.462Z [400] POST /api/borrowings/borrow 12ms auth=yes body={"copy_code":"97807195331668","due_days":14}
+2026-09-30T06:02:06.476Z [409] PUT /api/books/copies/172/code 9ms auth=yes body={"copy_code":"97802620338668"}
+2026-09-30T06:02:06.672Z [403] PUT /api/books/copies/173/code 2ms auth=yes body={"copy_code":"97802620338668X"}
+2026-09-30T06:02:06.687Z [401] PUT /api/books/copies/173/code 1ms auth=no body={"copy_code":"97802620338668X"}
+2026-09-30T06:02:06.700Z [401] GET /api/books/resolve-scan?code=97802620338668X 1ms auth=no
+2026-09-30T06:02:07.670Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 11ms auth=yes
+2026-09-30T07:02:16.012Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:02:37.672Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:03:50.762Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:10:58.607Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:12:32.619Z [400] PUT /api/books/copies/178/code 2ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T07:12:32.663Z [400] PUT /api/books/copies/178/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-30T07:12:32.669Z [400] PUT /api/books/copies/178/code 3ms auth=yes
+2026-09-30T07:12:32.683Z [404] PUT /api/books/copies/999999999/code 6ms auth=yes body={"copy_code":"97807195331226"}
+2026-09-30T07:12:32.696Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331226"}
+2026-09-30T07:12:32.781Z [404] GET /api/books/resolve-scan?code=BOOK085-C1 5ms auth=yes
+2026-09-30T07:12:32.833Z [409] PUT /api/books/copies/179/code 7ms auth=yes body={"copy_code":"97807195331226"}
+2026-09-30T07:12:32.921Z [400] POST /api/borrowings/borrow 10ms auth=yes body={"copy_code":"97807195331226","due_days":14}
+2026-09-30T07:12:32.932Z [409] PUT /api/books/copies/178/code 5ms auth=yes body={"copy_code":"97802620338226"}
+2026-09-30T07:12:33.100Z [403] PUT /api/books/copies/179/code 3ms auth=yes body={"copy_code":"97802620338226X"}
+2026-09-30T07:12:33.112Z [401] PUT /api/books/copies/179/code 1ms auth=no body={"copy_code":"97802620338226X"}
+2026-09-30T07:12:33.121Z [401] GET /api/books/resolve-scan?code=97802620338226X 1ms auth=no
+2026-09-30T07:12:33.833Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 3ms auth=yes
+2026-09-30T07:16:04.164Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T07:16:05.667Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T07:16:41.957Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:23:40.673Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:24:42.675Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:24:42.905Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:24:49.129Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:24:49.485Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:24:58.219Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:25:05.520Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T07:25:05.866Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:25:11.085Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:25:23.363Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:25:44.657Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 0ms auth=no
+2026-09-30T07:26:25.655Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T07:30:44.642Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T07:32:26.099Z [400] PUT /api/books/copies/183/code 4ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T07:32:26.146Z [400] PUT /api/books/copies/183/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-30T07:32:26.165Z [400] PUT /api/books/copies/183/code 4ms auth=yes
+2026-09-30T07:32:26.182Z [404] PUT /api/books/copies/999999999/code 6ms auth=yes body={"copy_code":"97807195331631"}
+2026-09-30T07:32:26.200Z [400] PUT /api/books/copies/abc/code 5ms auth=yes body={"copy_code":"97807195331631"}
+2026-09-30T07:32:26.234Z [404] GET /api/books/resolve-scan?code=BOOK090-C1 4ms auth=yes
+2026-09-30T07:32:26.302Z [409] PUT /api/books/copies/184/code 9ms auth=yes body={"copy_code":"97807195331631"}
+2026-09-30T07:32:26.408Z [400] POST /api/borrowings/borrow 13ms auth=yes body={"copy_code":"97807195331631","due_days":14}
+2026-09-30T07:32:26.427Z [409] PUT /api/books/copies/183/code 3ms auth=yes body={"copy_code":"97802620338631"}
+2026-09-30T07:32:26.622Z [403] PUT /api/books/copies/184/code 3ms auth=yes body={"copy_code":"97802620338631X"}
+2026-09-30T07:32:26.628Z [401] PUT /api/books/copies/184/code 2ms auth=no body={"copy_code":"97802620338631X"}
+2026-09-30T07:32:26.637Z [401] GET /api/books/resolve-scan?code=97802620338631X 2ms auth=no
+2026-09-30T07:32:27.316Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 5ms auth=yes
+2026-09-30T07:34:38.870Z [400] PUT /api/books/copies/188/code 4ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T07:34:38.959Z [400] PUT /api/books/copies/188/code 5ms auth=yes body={"copy_code":"   "}
+2026-09-30T07:34:38.976Z [400] PUT /api/books/copies/188/code 5ms auth=yes
+2026-09-30T07:34:38.998Z [404] PUT /api/books/copies/999999999/code 10ms auth=yes body={"copy_code":"97807195331775"}
+2026-09-30T07:34:39.014Z [400] PUT /api/books/copies/abc/code 5ms auth=yes body={"copy_code":"97807195331775"}
+2026-09-30T07:34:39.082Z [404] GET /api/books/resolve-scan?code=BOOK095-C1 9ms auth=yes
+2026-09-30T07:34:39.164Z [409] PUT /api/books/copies/189/code 13ms auth=yes body={"copy_code":"97807195331775"}
+2026-09-30T07:34:39.300Z [400] POST /api/borrowings/borrow 14ms auth=yes body={"copy_code":"97807195331775","due_days":14}
+2026-09-30T07:34:39.325Z [409] PUT /api/books/copies/188/code 7ms auth=yes body={"copy_code":"97802620338775"}
+2026-09-30T07:34:39.530Z [403] PUT /api/books/copies/189/code 4ms auth=yes body={"copy_code":"97802620338775X"}
+2026-09-30T07:34:39.538Z [401] PUT /api/books/copies/189/code 1ms auth=no body={"copy_code":"97802620338775X"}
+2026-09-30T07:34:39.558Z [401] GET /api/books/resolve-scan?code=97802620338775X 1ms auth=no
+2026-09-30T07:34:40.711Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 9ms auth=yes
+2026-09-30T07:35:18.695Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T10:49:42.098Z [400] PUT /api/books/copies/193/code 6ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T10:49:42.167Z [400] PUT /api/books/copies/193/code 3ms auth=yes body={"copy_code":"   "}
+2026-09-30T10:49:42.185Z [400] PUT /api/books/copies/193/code 3ms auth=yes
+2026-09-30T10:49:42.205Z [404] PUT /api/books/copies/999999999/code 7ms auth=yes body={"copy_code":"97807195331357"}
+2026-09-30T10:49:42.217Z [400] PUT /api/books/copies/abc/code 3ms auth=yes body={"copy_code":"97807195331357"}
+2026-09-30T10:49:42.271Z [404] GET /api/books/resolve-scan?code=BOOK100-C1 6ms auth=yes
+2026-09-30T10:49:42.339Z [409] PUT /api/books/copies/194/code 8ms auth=yes body={"copy_code":"97807195331357"}
+2026-09-30T10:49:42.504Z [400] POST /api/borrowings/borrow 18ms auth=yes body={"copy_code":"97807195331357","due_days":14}
+2026-09-30T10:49:42.520Z [409] PUT /api/books/copies/193/code 5ms auth=yes body={"copy_code":"97802620338357"}
+2026-09-30T10:49:42.730Z [403] PUT /api/books/copies/194/code 4ms auth=yes body={"copy_code":"97802620338357X"}
+2026-09-30T10:49:42.748Z [401] PUT /api/books/copies/194/code 1ms auth=no body={"copy_code":"97802620338357X"}
+2026-09-30T10:49:42.764Z [401] GET /api/books/resolve-scan?code=97802620338357X 1ms auth=no
+2026-09-30T10:49:44.261Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 22ms auth=yes
+2026-09-30T10:58:56.612Z [401] GET /api/books?limit=5 1ms auth=no
+2026-09-30T10:59:08.706Z [400] POST /api/auth/login 1ms auth=no body={"customer_id":"LIB0001","password":"admin123"}
+2026-09-30T10:59:46.672Z [401] POST /api/auth/login 2ms auth=no body={"password":"admin123","email":"admin@library.rw"}
+2026-09-30T10:59:46.685Z [401] POST /api/auth/login 2ms auth=no body={"password":"admin123","email":"admin@library.com"}
+2026-09-30T10:59:46.688Z [401] POST /api/auth/login 1ms auth=no body={"password":"admin123","email":"librarian@library.rw"}
+2026-09-30T11:05:45.319Z [401] POST /api/auth/login 567ms auth=no body={"email":"librarian@hopehaven.edu","password":"admin123"}
+2026-09-30T11:05:45.872Z [401] POST /api/auth/login 536ms auth=no body={"email":"librarian@hopehaven.edu","password":"Admin123"}
+2026-09-30T11:05:46.447Z [401] POST /api/auth/login 571ms auth=no body={"email":"librarian@hopehaven.edu","password":"password"}
+2026-09-30T11:05:47.016Z [401] POST /api/auth/login 563ms auth=no body={"email":"librarian@hopehaven.edu","password":"123456"}
+2026-09-30T11:05:47.579Z [401] POST /api/auth/login 559ms auth=no body={"email":"librarian@hopehaven.edu","password":"librarian123"}
+2026-09-30T11:05:48.108Z [401] POST /api/auth/login 521ms auth=no body={"email":"librarian@hopehaven.edu","password":"librarian"}
+2026-09-30T11:05:48.634Z [401] POST /api/auth/login 515ms auth=no body={"email":"librarian@hopehaven.edu","password":"Admin@123"}
+2026-09-30T11:06:33.642Z [401] POST /api/auth/login 1ms auth=no body={"email":"zz_del_test_lib@hopehaven.edu","password":"TempTest123!"}
+2026-09-30T11:09:15.701Z [404] GET /api/books/106 4ms auth=yes
+2026-09-30T11:10:45.646Z [409] DELETE /api/books/107 7ms auth=yes
+2026-09-30T11:13:39.802Z [409] DELETE /api/books/109 3ms auth=yes
+2026-09-30T11:18:26.369Z [409] DELETE /api/books/111 8ms auth=yes
+2026-09-30T11:19:28.861Z [400] PUT /api/books/copies/205/code 2ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T11:19:28.922Z [400] PUT /api/books/copies/205/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-30T11:19:28.937Z [400] PUT /api/books/copies/205/code 1ms auth=yes
+2026-09-30T11:19:28.957Z [404] PUT /api/books/copies/999999999/code 6ms auth=yes body={"copy_code":"97807195331399"}
+2026-09-30T11:19:28.963Z [400] PUT /api/books/copies/abc/code 3ms auth=yes body={"copy_code":"97807195331399"}
+2026-09-30T11:19:29.002Z [404] GET /api/books/resolve-scan?code=BOOK112-C1 5ms auth=yes
+2026-09-30T11:19:29.064Z [409] PUT /api/books/copies/206/code 5ms auth=yes body={"copy_code":"97807195331399"}
+2026-09-30T11:19:29.145Z [400] POST /api/borrowings/borrow 8ms auth=yes body={"copy_code":"97807195331399","due_days":14}
+2026-09-30T11:19:29.167Z [409] PUT /api/books/copies/205/code 3ms auth=yes body={"copy_code":"97802620338399"}
+2026-09-30T11:19:29.356Z [403] PUT /api/books/copies/206/code 4ms auth=yes body={"copy_code":"97802620338399X"}
+2026-09-30T11:19:29.368Z [401] PUT /api/books/copies/206/code 1ms auth=no body={"copy_code":"97802620338399X"}
+2026-09-30T11:19:29.371Z [401] GET /api/books/resolve-scan?code=97802620338399X 1ms auth=no
+2026-09-30T11:19:30.067Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 5ms auth=yes
+2026-09-30T12:13:44.144Z [400] POST /api/auth/login/qr 13ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:13:51.088Z [400] POST /api/auth/login/qr 9ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:14:04.272Z [400] POST /api/auth/login/qr 5ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:19:00.696Z [400] POST /api/auth/login/qr 8ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:19:12.703Z [400] POST /api/auth/login/qr 7ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:19:27.339Z [400] PUT /api/books/copies/210/code 4ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T12:19:27.404Z [400] PUT /api/books/copies/210/code 2ms auth=yes body={"copy_code":"   "}
+2026-09-30T12:19:27.418Z [400] PUT /api/books/copies/210/code 3ms auth=yes
+2026-09-30T12:19:27.432Z [404] PUT /api/books/copies/999999999/code 7ms auth=yes body={"copy_code":"97807195331776"}
+2026-09-30T12:19:27.456Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331776"}
+2026-09-30T12:19:27.620Z [404] GET /api/books/resolve-scan?code=BOOK117-C1 6ms auth=yes
+2026-09-30T12:19:27.689Z [409] PUT /api/books/copies/211/code 7ms auth=yes body={"copy_code":"97807195331776"}
+2026-09-30T12:19:27.788Z [400] POST /api/borrowings/borrow 11ms auth=yes body={"copy_code":"97807195331776","due_days":14}
+2026-09-30T12:19:27.806Z [409] PUT /api/books/copies/210/code 6ms auth=yes body={"copy_code":"97802620338776"}
+2026-09-30T12:19:28.025Z [403] PUT /api/books/copies/211/code 4ms auth=yes body={"copy_code":"97802620338776X"}
+2026-09-30T12:19:28.047Z [401] PUT /api/books/copies/211/code 1ms auth=no body={"copy_code":"97802620338776X"}
+2026-09-30T12:19:28.061Z [401] GET /api/books/resolve-scan?code=97802620338776X 1ms auth=no
+2026-09-30T12:19:29.325Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 10ms auth=yes
+2026-09-30T12:20:32.132Z [400] POST /api/auth/login/qr 37ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:38:11.176Z [400] PUT /api/books/copies/215/code 7ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T12:38:11.265Z [400] PUT /api/books/copies/215/code 6ms auth=yes body={"copy_code":"   "}
+2026-09-30T12:38:11.281Z [400] PUT /api/books/copies/215/code 6ms auth=yes
+2026-09-30T12:38:11.300Z [404] PUT /api/books/copies/999999999/code 8ms auth=yes body={"copy_code":"97807195331270"}
+2026-09-30T12:38:11.311Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331270"}
+2026-09-30T12:38:11.362Z [404] GET /api/books/resolve-scan?code=BOOK122-C1 9ms auth=yes
+2026-09-30T12:38:11.436Z [409] PUT /api/books/copies/216/code 8ms auth=yes body={"copy_code":"97807195331270"}
+2026-09-30T12:38:11.597Z [400] POST /api/borrowings/borrow 15ms auth=yes body={"copy_code":"97807195331270","due_days":14}
+2026-09-30T12:38:11.613Z [409] PUT /api/books/copies/215/code 11ms auth=yes body={"copy_code":"97802620338270"}
+2026-09-30T12:38:11.836Z [403] PUT /api/books/copies/216/code 6ms auth=yes body={"copy_code":"97802620338270X"}
+2026-09-30T12:38:11.847Z [401] PUT /api/books/copies/216/code 2ms auth=no body={"copy_code":"97802620338270X"}
+2026-09-30T12:38:11.862Z [401] GET /api/books/resolve-scan?code=97802620338270X 2ms auth=no
+2026-09-30T12:38:13.402Z [404] GET /api/books/resolve-scan?code=HH1%7CNOT-A-REAL-COPY%7CX%7CY%7CZ%7CS1%7CSH1 6ms auth=yes
+2026-09-30T12:39:43.212Z [404] POST /api/auth/login/qr 4ms auth=no body={"qr_code":"STU0002"}
+2026-09-30T12:40:59.382Z [400] POST /api/auth/login/qr 11ms auth=no body={"qr_code":"0002"}
+2026-09-30T12:45:10.452Z [404] POST /api/auth/login/qr 4ms auth=no body={"qr_code":"STU0002"}
+2026-09-30T13:00:41.136Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 5ms auth=no
+2026-09-30T13:00:41.293Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T13:04:56.468Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T13:04:57.948Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:05:28.099Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:05:29.142Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:05:53.778Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T13:07:08.009Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:25:00.880Z [401] POST /api/auth/login 294ms auth=no body={"email":"ezras.mitweri1312@hopehavenschool.org","password":"student123"}
+2026-09-30T13:25:01.137Z [401] POST /api/auth/login 245ms auth=no body={"email":"ezras.mitweri1312@hopehavenschool.org","password":"Student@123"}
+2026-09-30T13:25:02.073Z [401] POST /api/auth/login 931ms auth=no body={"email":"librarian@hopehaven.edu","password":"librarian123"}
+2026-09-30T13:25:27.520Z [401] POST /api/auth/login 937ms auth=no body={"email":"librarian@hopehaven.edu","password":"x"}
+2026-09-30T13:26:38.440Z [400] POST /api/auth/login 3ms auth=no body={"email":"ezras.mitweri1312@hopehavenschool.org"}
+2026-09-30T13:26:39.376Z [401] POST /api/auth/login 932ms auth=no body={"email":"librarian@hopehaven.edu","password":"admin123"}
+2026-09-30T13:27:00.110Z [401] POST /api/auth/login 942ms auth=no body={"email":"librarian@hopehaven.edu","password":"admin123"}
+2026-09-30T13:27:00.131Z [401] POST /api/auth/login 4ms auth=no body={"email":"student@hopehaven.edu","password":"student123"}
+2026-09-30T13:33:11.090Z [400] PUT /api/books/copies/222/code 9ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T13:33:11.179Z [400] PUT /api/books/copies/222/code 5ms auth=yes body={"copy_code":"   "}
+2026-09-30T13:33:11.194Z [400] PUT /api/books/copies/222/code 5ms auth=yes
+2026-09-30T13:33:11.216Z [404] PUT /api/books/copies/999999999/code 10ms auth=yes body={"copy_code":"97807195331078"}
+2026-09-30T13:33:11.235Z [400] PUT /api/books/copies/abc/code 5ms auth=yes body={"copy_code":"97807195331078"}
+2026-09-30T13:33:11.423Z [404] GET /api/books/resolve-scan?code=BOOK129-C1 9ms auth=yes
+2026-09-30T13:33:11.519Z [409] PUT /api/books/copies/223/code 10ms auth=yes body={"copy_code":"97807195331078"}
+2026-09-30T13:33:11.710Z [400] POST /api/borrowings/borrow 13ms auth=yes body={"copy_code":"97807195331078","due_days":14}
+2026-09-30T13:33:11.723Z [409] PUT /api/books/copies/222/code 7ms auth=yes body={"copy_code":"97802620338078"}
+2026-09-30T13:33:11.988Z [403] PUT /api/books/copies/223/code 4ms auth=yes body={"copy_code":"97802620338078X"}
+2026-09-30T13:33:11.994Z [401] PUT /api/books/copies/223/code 1ms auth=no body={"copy_code":"97802620338078X"}
+2026-09-30T13:33:12.008Z [401] GET /api/books/resolve-scan?code=97802620338078X 2ms auth=no
+2026-09-30T13:34:35.387Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 9ms auth=no
+2026-09-30T13:34:36.870Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T13:34:37.916Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:34:48.539Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 5ms auth=no
+2026-09-30T13:38:48.732Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 8ms auth=no
+2026-09-30T13:38:54.012Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 5ms auth=no
+2026-09-30T13:40:56.530Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:41:14.709Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 6ms auth=no
+2026-09-30T13:41:16.830Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-09-30T13:41:34.951Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:42:13.843Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T13:47:53.976Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T13:58:13.111Z [403] POST /api/borrowings/62/approve 8ms auth=yes
+2026-09-30T13:58:13.235Z [404] POST /api/borrowings/62/approve 8ms auth=yes
+2026-09-30T14:03:33.630Z [403] POST /api/borrowings/64/approve 6ms auth=yes
+2026-09-30T14:03:33.741Z [404] POST /api/borrowings/64/approve 6ms auth=yes
+2026-09-30T14:03:36.720Z [400] PUT /api/books/copies/225/code 5ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T14:03:36.798Z [400] PUT /api/books/copies/225/code 6ms auth=yes body={"copy_code":"   "}
+2026-09-30T14:03:36.810Z [400] PUT /api/books/copies/225/code 4ms auth=yes
+2026-09-30T14:03:36.829Z [404] PUT /api/books/copies/999999999/code 8ms auth=yes body={"copy_code":"97807195331902"}
+2026-09-30T14:03:36.841Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331902"}
+2026-09-30T14:03:37.043Z [404] GET /api/books/resolve-scan?code=BOOK132-C1 39ms auth=yes
+2026-09-30T14:03:37.114Z [409] PUT /api/books/copies/226/code 9ms auth=yes body={"copy_code":"97807195331902"}
+2026-09-30T14:03:37.235Z [400] POST /api/borrowings/borrow 15ms auth=yes body={"copy_code":"97807195331902","due_days":14}
+2026-09-30T14:03:37.262Z [409] PUT /api/books/copies/225/code 10ms auth=yes body={"copy_code":"97802620338902"}
+2026-09-30T14:03:37.530Z [403] PUT /api/books/copies/226/code 6ms auth=yes body={"copy_code":"97802620338902X"}
+2026-09-30T14:03:37.537Z [401] PUT /api/books/copies/226/code 2ms auth=no body={"copy_code":"97802620338902X"}
+2026-09-30T14:03:37.557Z [401] GET /api/books/resolve-scan?code=97802620338902X 2ms auth=no
+2026-09-30T14:06:40.942Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T14:06:59.938Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T14:07:42.912Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T14:08:19.917Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-09-30T14:09:13.954Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T14:10:20.935Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-09-30T14:26:54.017Z [403] GET /api/fines/mine 5ms auth=yes
+2026-09-30T14:36:57.811Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 6ms auth=no
+2026-09-30T14:46:46.668Z [403] GET /api/fines/mine 8ms auth=yes
+2026-09-30T14:46:46.709Z [403] GET /api/fines/mine 5ms auth=yes
+2026-09-30T14:46:46.722Z [400] POST /api/borrowings/borrow 7ms auth=yes body={"customer_code":"STUZZFINE2","copy_code":"ZZFINE2-C3","due_days":14}
+2026-09-30T14:46:46.736Z [404] POST /api/borrowings/return 10ms auth=yes body={"copy_code":"ZZFINE2-C3","condition":"LOST"}
+2026-09-30T14:46:46.752Z [400] POST /api/borrowings/borrow 7ms auth=yes body={"customer_code":"STUZZFINE2","copy_code":"ZZFINE2-C4","due_days":14}
+2026-09-30T14:46:46.770Z [404] POST /api/borrowings/return 10ms auth=yes body={"copy_code":"ZZFINE2-C4","condition":"DAMAGED"}
+2026-09-30T14:58:10.021Z [403] GET /api/fines/mine 8ms auth=yes
+2026-09-30T14:58:10.197Z [400] POST /api/borrowings/borrow 9ms auth=yes body={"customer_code":"STUZZFINE2","copy_code":"ZZFINE2-C4","due_days":14}
+2026-09-30T14:58:10.212Z [404] POST /api/borrowings/return 10ms auth=yes body={"copy_code":"ZZFINE2-C4","condition":"DAMAGED"}
+2026-09-30T15:05:25.264Z [403] GET /api/fines/mine 6ms auth=yes
+2026-09-30T15:07:30.577Z [403] POST /api/borrowings/80/approve 4ms auth=yes
+2026-09-30T15:07:30.649Z [404] POST /api/borrowings/80/approve 3ms auth=yes
+2026-09-30T15:07:32.765Z [400] PUT /api/books/copies/239/code 3ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-09-30T15:07:32.815Z [400] PUT /api/books/copies/239/code 4ms auth=yes body={"copy_code":"   "}
+2026-09-30T15:07:32.831Z [400] PUT /api/books/copies/239/code 2ms auth=yes
+2026-09-30T15:07:32.850Z [404] PUT /api/books/copies/999999999/code 5ms auth=yes body={"copy_code":"97807195331133"}
+2026-09-30T15:07:32.864Z [400] PUT /api/books/copies/abc/code 3ms auth=yes body={"copy_code":"97807195331133"}
+2026-09-30T15:07:32.894Z [404] GET /api/books/resolve-scan?code=BOOK134-C1 10ms auth=yes
+2026-09-30T15:07:32.968Z [409] PUT /api/books/copies/240/code 6ms auth=yes body={"copy_code":"97807195331133"}
+2026-09-30T15:07:33.032Z [400] POST /api/borrowings/borrow 12ms auth=yes body={"copy_code":"97807195331133","due_days":14}
+2026-09-30T15:07:33.038Z [409] PUT /api/books/copies/239/code 4ms auth=yes body={"copy_code":"97802620338133"}
+2026-09-30T15:07:33.215Z [403] PUT /api/books/copies/240/code 2ms auth=yes body={"copy_code":"97802620338133X"}
+2026-09-30T15:07:33.229Z [401] PUT /api/books/copies/240/code 1ms auth=no body={"copy_code":"97802620338133X"}
+2026-09-30T15:07:33.244Z [401] GET /api/books/resolve-scan?code=97802620338133X 0ms auth=no
+2026-09-30T15:09:06.912Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T05:09:57.443Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 6ms auth=no
+2026-10-01T05:10:03.602Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 4ms auth=no
+2026-10-01T05:10:27.342Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T05:11:12.185Z [404] GET /api/books/resolve-scan?code=HHO5OIYZW5S 15ms auth=yes
+2026-10-01T05:12:32.884Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T05:12:51.138Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T05:13:24.514Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T05:14:18.642Z [400] POST /api/borrowings/86/approve 45ms auth=yes
+2026-10-01T05:14:22.773Z [404] POST /api/borrowings/86/approve 5ms auth=yes
+2026-10-01T05:14:25.704Z [404] POST /api/borrowings/86/approve 5ms auth=yes
+2026-10-01T05:14:52.565Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T05:15:03.002Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T05:15:06.495Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T05:28:19.667Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T05:33:49.676Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T05:35:18.795Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 8ms auth=no
+2026-10-01T05:36:21.134Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 4ms auth=no
+2026-10-01T05:36:41.927Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-10-01T05:45:08.563Z [403] POST /api/borrowings/return-my 16ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T05:45:08.742Z [403] POST /api/borrowings/return-my 4ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T05:51:42.486Z [403] POST /api/borrowings/return-my 7ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T05:51:42.650Z [403] POST /api/borrowings/return-my 5ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T05:52:06.658Z [403] GET /api/fines/mine 3ms auth=yes
+2026-10-01T05:52:09.595Z [400] PUT /api/books/copies/252/code 6ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-10-01T05:52:09.680Z [400] PUT /api/books/copies/252/code 5ms auth=yes body={"copy_code":"   "}
+2026-10-01T05:52:09.699Z [400] PUT /api/books/copies/252/code 3ms auth=yes
+2026-10-01T05:52:09.713Z [404] PUT /api/books/copies/999999999/code 7ms auth=yes body={"copy_code":"97807195331215"}
+2026-10-01T05:52:09.724Z [400] PUT /api/books/copies/abc/code 3ms auth=yes body={"copy_code":"97807195331215"}
+2026-10-01T05:52:09.787Z [404] GET /api/books/resolve-scan?code=BOOK137-C1 9ms auth=yes
+2026-10-01T05:52:09.852Z [409] PUT /api/books/copies/253/code 9ms auth=yes body={"copy_code":"97807195331215"}
+2026-10-01T05:52:09.953Z [400] POST /api/borrowings/borrow 14ms auth=yes body={"copy_code":"97807195331215","due_days":14}
+2026-10-01T05:52:09.982Z [409] PUT /api/books/copies/252/code 10ms auth=yes body={"copy_code":"97802620338215"}
+2026-10-01T05:52:10.214Z [403] PUT /api/books/copies/253/code 13ms auth=yes body={"copy_code":"97802620338215X"}
+2026-10-01T05:52:10.226Z [401] PUT /api/books/copies/253/code 1ms auth=no body={"copy_code":"97802620338215X"}
+2026-10-01T05:52:10.235Z [401] GET /api/books/resolve-scan?code=97802620338215X 1ms auth=no
+2026-10-01T06:36:14.759Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 12ms auth=no
+2026-10-01T06:37:24.511Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T06:40:25.173Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T06:40:36.760Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-10-01T06:41:26.206Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T06:42:39.999Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T06:43:06.629Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T06:43:53.433Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 3ms auth=no
+2026-10-01T07:15:57.781Z [400] PUT /api/books/copies/260/code 10ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-10-01T07:15:57.866Z [400] PUT /api/books/copies/260/code 4ms auth=yes body={"copy_code":"   "}
+2026-10-01T07:15:57.879Z [400] PUT /api/books/copies/260/code 4ms auth=yes
+2026-10-01T07:15:57.913Z [404] PUT /api/books/copies/999999999/code 9ms auth=yes body={"copy_code":"97807195331115"}
+2026-10-01T07:15:57.925Z [400] PUT /api/books/copies/abc/code 4ms auth=yes body={"copy_code":"97807195331115"}
+2026-10-01T07:15:57.984Z [404] GET /api/books/resolve-scan?code=BOOK141-C1 9ms auth=yes
+2026-10-01T07:15:58.053Z [409] PUT /api/books/copies/261/code 13ms auth=yes body={"copy_code":"97807195331115"}
+2026-10-01T07:15:58.241Z [400] POST /api/borrowings/borrow 24ms auth=yes body={"copy_code":"97807195331115","due_days":14}
+2026-10-01T07:15:58.261Z [409] PUT /api/books/copies/260/code 8ms auth=yes body={"copy_code":"97802620338115"}
+2026-10-01T07:15:58.493Z [403] PUT /api/books/copies/261/code 4ms auth=yes body={"copy_code":"97802620338115X"}
+2026-10-01T07:15:58.499Z [401] PUT /api/books/copies/261/code 1ms auth=no body={"copy_code":"97802620338115X"}
+2026-10-01T07:15:58.509Z [401] GET /api/books/resolve-scan?code=97802620338115X 2ms auth=no
+2026-10-01T07:16:25.248Z [403] POST /api/borrowings/return-my 11ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T07:16:25.403Z [403] POST /api/borrowings/return-my 6ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T07:16:26.997Z [403] GET /api/fines/mine 4ms auth=yes
+2026-10-01T07:19:10.310Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 7ms auth=no
+2026-10-01T07:33:12.645Z [400] PUT /api/books/copies/268/code 15ms auth=yes body={"copy_code":"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+2026-10-01T07:33:12.753Z [400] PUT /api/books/copies/268/code 6ms auth=yes body={"copy_code":"   "}
+2026-10-01T07:33:12.762Z [400] PUT /api/books/copies/268/code 4ms auth=yes
+2026-10-01T07:33:12.779Z [404] PUT /api/books/copies/999999999/code 11ms auth=yes body={"copy_code":"97807195331113"}
+2026-10-01T07:33:12.801Z [400] PUT /api/books/copies/abc/code 7ms auth=yes body={"copy_code":"97807195331113"}
+2026-10-01T07:33:12.858Z [404] GET /api/books/resolve-scan?code=BOOK143-C1 8ms auth=yes
+2026-10-01T07:33:12.938Z [409] PUT /api/books/copies/269/code 8ms auth=yes body={"copy_code":"97807195331113"}
+2026-10-01T07:33:13.045Z [400] POST /api/borrowings/borrow 12ms auth=yes body={"copy_code":"97807195331113","due_days":14}
+2026-10-01T07:33:13.059Z [409] PUT /api/books/copies/268/code 9ms auth=yes body={"copy_code":"97802620338113"}
+2026-10-01T07:33:13.310Z [403] PUT /api/books/copies/269/code 3ms auth=yes body={"copy_code":"97802620338113X"}
+2026-10-01T07:33:13.317Z [401] PUT /api/books/copies/269/code 2ms auth=no body={"copy_code":"97802620338113X"}
+2026-10-01T07:33:13.326Z [401] GET /api/books/resolve-scan?code=97802620338113X 1ms auth=no
+2026-10-01T07:33:15.219Z [403] POST /api/borrowings/113/approve 5ms auth=yes
+2026-10-01T07:33:15.321Z [404] POST /api/borrowings/113/approve 7ms auth=yes
+2026-10-01T07:33:17.672Z [403] POST /api/borrowings/return-my 9ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T07:33:17.943Z [403] POST /api/borrowings/return-my 5ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T07:44:39.400Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-10-01T07:44:40.240Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 1ms auth=no
+2026-10-01T08:08:04.738Z [403] POST /api/borrowings/118/approve 2ms auth=yes
+2026-10-01T08:08:04.795Z [404] POST /api/borrowings/118/approve 3ms auth=yes
+2026-10-01T08:08:05.904Z [403] POST /api/borrowings/return-my 4ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T08:08:06.042Z [403] POST /api/borrowings/return-my 3ms auth=yes body={"copy_code":"ZZDESK-C1"}
+2026-10-01T08:17:46.423Z [404] GET /uploads/covers/1790580842461_ee80137a-1add-4249-87bc-923b48c5201b.png 2ms auth=no
+2026-10-01T08:20:49.830Z [403] POST /api/borrowings/123/approve 3ms auth=yes
+2026-10-01T08:20:49.900Z [404] POST /api/borrowings/123/approve 3ms auth=yes

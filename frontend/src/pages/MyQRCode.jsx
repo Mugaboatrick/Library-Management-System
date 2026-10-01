@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import QRCode from 'qrcode';
 import UserLayout from '../components/layout/UserLayout';
 import { useAuth } from '../context/AuthContext';
@@ -40,19 +39,34 @@ const MyQRCode = () => {
 
   const roleLabel = user?.role?.charAt(0) + user?.role?.slice(1).toLowerCase();
   const card = profile?.card;
+  // getMe is the source of truth here; the auth-context copy can be a partial
+  // snapshot and may not carry the contact fields.
+  const owner = profile?.user || user;
+
+  // Owner details are PRINTED on the card, never encoded into the QR. The
+  // password is never passed to the renderer.
+  const ownerDetails = {
+    email: owner?.email,
+    phone: owner?.phone,
+    className: owner?.class_name
+  };
+
+  const cardImage = () =>
+    buildLibraryCardDataUrl({
+      qrUrl: qrDataUrl,
+      customerId: owner?.customer_id,
+      name: `${owner?.first_name || ''} ${owner?.last_name || ''}`,
+      roleLabel,
+      cardNumber: card?.card_number,
+      ...ownerDetails
+    });
 
   const handleDownload = async () => {
     if (!qrDataUrl) return;
     try {
       setGeneratingImage(true);
-      const dataUrl = await buildLibraryCardDataUrl({
-        qrUrl: qrDataUrl,
-        customerId: user?.customer_id,
-        name: `${user?.first_name || ''} ${user?.last_name || ''}`,
-        roleLabel: `${roleLabel} • ${user?.email || ''}`,
-        cardNumber: card?.card_number
-      });
-      downloadCardImage(dataUrl, `${user.customer_id}_library_card.png`);
+      const dataUrl = await cardImage();
+      downloadCardImage(dataUrl, `${owner.customer_id}_library_card.png`);
       toast.success('Library card image downloaded');
     } catch {
       toast.error('Failed to export card image');
@@ -65,16 +79,10 @@ const MyQRCode = () => {
     if (!qrDataUrl) return;
     try {
       setGeneratingImage(true);
-      const dataUrl = await buildLibraryCardDataUrl({
-        qrUrl: qrDataUrl,
-        customerId: user?.customer_id,
-        name: `${user?.first_name || ''} ${user?.last_name || ''}`,
-        roleLabel: `${roleLabel} • ${user?.email || ''}`,
-        cardNumber: card?.card_number
-      });
+      const dataUrl = await cardImage();
       const printWindow = window.open('', '_blank');
       printWindow.document.write(`
-        <html><head><title>${user.customer_id} - Library Card</title></head>
+        <html><head><title>${owner.customer_id} - Library Card</title></head>
         <body style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f1f5f9;margin:0">
           <img src="${dataUrl}" style="width:640px;max-width:95vw" />
         </body></html>
@@ -109,7 +117,6 @@ const MyQRCode = () => {
 
           {!card ? (
             <div className="text-center py-8">
-              <div className="text-5xl mb-3">📇</div>
               <p className="text-sm mb-2 text-gray-600">You don't have a QR card yet.</p>
               <p className="text-xs text-gray-500">Ask a librarian to create one for you.</p>
             </div>
@@ -157,22 +164,6 @@ const MyQRCode = () => {
           )}
         </div>
 
-        <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-sm text-yellow-800">
-            <strong>Need a new QR code?</strong> Only a librarian can create or regenerate QR cards.
-            Visit the library desk or contact your librarian.
-          </p>
-        </div>
-
-        <div className="mt-4 bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="font-semibold text-gray-700 mb-2">How it works</h3>
-          <ul className="text-sm text-gray-600 space-y-2">
-            <li>Download the QR image to your phone</li>
-            <li>On the login page, tap "Scan QR Card" and scan your image</li>
-            <li>Show this card at the library desk to borrow/return books</li>
-          </ul>
-          <Link to="/books" className="mt-4 inline-block px-4 py-2 bg-primary-600 text-white rounded-lg text-sm">Browse Books</Link>
-        </div>
       </div>
     </UserLayout>
   );

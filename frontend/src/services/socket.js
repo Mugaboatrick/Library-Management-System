@@ -1,10 +1,11 @@
 import { io } from 'socket.io-client';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const SOCKET_URL = new URL(API_URL).origin;
 
 let socket = null;
 let lastRole = null;
+let lastUserId = null;
 
 // Clean up socket when page enters the browser Back-Forward Cache (bfcache).
 // Without this, the old WebSocket lingers and produces noisy reconnect errors
@@ -25,14 +26,22 @@ if (typeof window !== 'undefined') {
   window.addEventListener('pageshow', onPageshow);
 }
 
-export function connectSocket(role) {
+export function connectSocket(role, userId) {
+  // If the role changed since the socket was created, the server's room
+  // membership (e.g. 'librarians') is stale — tear it down and start fresh.
+  if (socket && lastRole !== role) {
+    socket.disconnect();
+    socket.removeAllListeners();
+    socket = null;
+  }
   lastRole = role;
+  lastUserId = userId;
   if (socket) {
     socket.connect();
     return socket;
   }
   socket = io(SOCKET_URL, {
-    query: { role },
+    query: { role, userId: userId || '' },
     transports: ['websocket', 'polling'],
     reconnection: true,
     reconnectionAttempts: Infinity,

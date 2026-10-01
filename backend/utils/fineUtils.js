@@ -85,6 +85,22 @@ async function updateUserBlockStatus(userId) {
     return { blocked: true, total };
   }
 
+  // Settled: restore access. Only lift a block that THIS function applied,
+  // so an account blocked for any other reason stays blocked.
+  const [[wasBlocked]] = await pool.query(
+    `SELECT status, blocked_reason FROM users WHERE id = ?`, [userId]
+  );
+  const fineBlockReasons = [
+    `Outstanding fines exceeded threshold (${BLOCK_THRESHOLD} RWF)`,
+    `Overdue items exceed ${OVERDUE_DAYS_THRESHOLD} days`
+  ];
+  if (wasBlocked?.status === 'BLOCKED' && fineBlockReasons.includes(wasBlocked.blocked_reason)) {
+    await pool.query(
+      `UPDATE users SET status = 'ACTIVE', blocked_reason = NULL WHERE id = ?`,
+      [userId]
+    );
+  }
+
   return { blocked: total >= BLOCK_THRESHOLD || hasOverdueExceeded, total };
 }
 

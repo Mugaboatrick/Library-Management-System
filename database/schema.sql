@@ -25,10 +25,12 @@ CREATE TABLE IF NOT EXISTS users (
   last_name VARCHAR(100) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   phone VARCHAR(20),
+  class_name VARCHAR(50),
   password VARCHAR(255) NOT NULL,
   role VARCHAR(20) NOT NULL DEFAULT 'STUDENT', -- STUDENT | TEACHER | GUEST | LIBRARIAN
   role_id INT,
   customer_id VARCHAR(20) NOT NULL UNIQUE,     -- STU0001 / TCH0001 / GST0001
+  physical_card_no VARCHAR(50) NULL,           -- legacy numeric card serials such as 19989204
   status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', -- ACTIVE | BLOCKED | SUSPENDED
   blocked_reason VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -60,6 +62,9 @@ CREATE TABLE IF NOT EXISTS books (
   title VARCHAR(255) NOT NULL,
   author VARCHAR(255),
   category VARCHAR(100),
+  subject VARCHAR(150),
+  section VARCHAR(100),
+  grade_level VARCHAR(50),
   publisher VARCHAR(150),
   publish_year INT,
   shelf_location VARCHAR(50),
@@ -71,16 +76,45 @@ CREATE TABLE IF NOT EXISTS books (
 ) ENGINE=InnoDB;
 
 -- ------------------------------------------------------------
+-- 4b. categories (library catalog categories: CCB, Nov Books, Reference, Biblical)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  code VARCHAR(20) NOT NULL UNIQUE,       -- short code e.g. CCB, NOV, REF, BIB
+  description VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- ------------------------------------------------------------
+-- 4c. subjects (subjects under each category, at levels S1-S6)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS subjects (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  category_id INT NOT NULL,
+  name VARCHAR(150) NOT NULL,
+  level VARCHAR(5) NOT NULL DEFAULT 'S1',  -- S1 | S2 | S3 | S4 | S5 | S6
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_cat_subject_level (category_id, name, level)
+) ENGINE=InnoDB;
+
+-- ------------------------------------------------------------
 -- 5. book_copies (each copy has unique code)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS book_copies (
   id INT AUTO_INCREMENT PRIMARY KEY,
   book_id INT NOT NULL,
   copy_code VARCHAR(30) NOT NULL UNIQUE,     -- BOOK001-C1
+  -- Printed-label payload: HH1|<copyCode>|<title>|<author>|<category>|<subject>|<level>|<shelf>
+  barcode_payload VARCHAR(255),
   status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE', -- AVAILABLE | BORROWED | RETIRED
   retired_reason VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+  FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+  INDEX idx_copy_payload (barcode_payload)
 ) ENGINE=InnoDB;
 
 -- ------------------------------------------------------------
@@ -160,12 +194,15 @@ CREATE TABLE IF NOT EXISTS ebooks (
   title VARCHAR(255) NOT NULL,
   author VARCHAR(255),
   subject VARCHAR(150),
+  section VARCHAR(100),
   grade_level VARCHAR(50),
   isbn VARCHAR(50),
+  qr_code VARCHAR(500),
   file_path VARCHAR(500),
   file_size BIGINT,
   format VARCHAR(10),  -- PDF | EPUB
   is_protected TINYINT(1) DEFAULT 0,  -- 1 = DRM-protected: students can read online but cannot download or copy
+  access_mode VARCHAR(20) NOT NULL DEFAULT 'READ_ONLY',  -- READ_ONLY | READ_BORROW | BORROW_ONLY
   cover_image VARCHAR(500),
   uploaded_by INT,
   status VARCHAR(20) DEFAULT 'ACTIVE',
@@ -216,6 +253,62 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
+
+-- ------------------------------------------------------------
+-- 14. notifications
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS notifications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  type VARCHAR(50) NOT NULL, -- e.g. OVERDUE | REMINDER | APPROVED | REJECTED
+  title VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL,
+  data JSON NULL,
+  is_read TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_notif_user (user_id, is_read)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_id INT NOT NULL,
+  recipient_id INT NOT NULL,
+  subject VARCHAR(255) NOT NULL,
+  body TEXT NOT NULL,
+  is_read TINYINT(1) NOT NULL DEFAULT 0,
+  sender_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  recipient_deleted TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_msg_sender (sender_id, sender_deleted, created_at),
+  INDEX idx_msg_recipient (recipient_id, is_read)
+) ENGINE=InnoDB;
+
+-- ------------------------------------------------------------
+-- Categories: professional catalog categories (CCB, Nov, Reference, Biblical)
+-- ------------------------------------------------------------
+INSERT IGNORE INTO categories (name, code, description) VALUES
+  ('CCB', 'CCB', 'Classical Conversations Books'),
+  ('Nov Books', 'NOV', 'Novel books'),
+  ('Reference Books', 'REF', 'Reference and dictionary books'),
+  ('Biblical Books', 'BIB', 'Biblical and spiritual books');
+
+-- ------------------------------------------------------------
+-- Subjects per category at levels S1-S6
+-- (INSERT IGNORE skips (category, name, level) combos already present)
+-- ------------------------------------------------------------
+INSERT IGNORE INTO subjects (category_id, name, level)
+SELECT c.id, s.name, l.level
+FROM categories c
+CROSS JOIN (
+  SELECT 'Kinyarwanda' AS name UNION SELECT 'English' UNION SELECT 'French' UNION
+  SELECT 'Maths' UNION SELECT 'Physics' UNION SELECT 'Biology' UNION SELECT 'Chemistry' UNION
+  SELECT 'ICT' UNION SELECT 'Entrepreneurships' UNION SELECT 'History' UNION SELECT 'Geography' UNION
+  SELECT 'Literature' UNION SELECT 'Religion' UNION SELECT 'General'
+) s
+CROSS JOIN (SELECT 'S1' AS level UNION SELECT 'S2' UNION SELECT 'S3' UNION SELECT 'S4' UNION SELECT 'S5' UNION SELECT 'S6') l;
 
 -- ============================================================
 -- Seed Data

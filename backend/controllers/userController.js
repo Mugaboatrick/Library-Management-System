@@ -5,6 +5,7 @@ const { pool } = require('../config/db');
 const { generateCustomerId, generateCardNumber } = require('../utils/customerUtils');
 const { generateCustomerQR } = require('../utils/qrGenerator');
 const { getBorrowLimit } = require('../utils/fineUtils');
+const { passwordStrengthError } = require('../utils/passwordStrength');
 
 const removeQRCardFiles = async (cards) => {
   for (const card of cards) {
@@ -28,6 +29,51 @@ exports.cleanupDeletedQRCards = async () => {
   if (cards.length > 0) {
     await pool.query(`DELETE FROM customer_cards WHERE status <> 'ACTIVE'`);
     console.log(`Removed ${cards.length} deleted QR card(s)`);
+  }
+};
+
+// Return the librarian/admin account so members can contact the library
+// Privacy: the SERVICE-level email/phone of the System Administrator is
+// returned ONLY to the System Administrator themselves (LIBRARIAN role).
+// Every other logged-in member gets just the staff name + customer_id +
+// role, so the Messages recipient picker keeps working without exposing
+// the administrator's private contact details.
+exports.getLibrarian = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT id, first_name, last_name, email, customer_id, role
+       FROM users WHERE role = 'LIBRARIAN' AND status = 'ACTIVE'
+       ORDER BY id ASC LIMIT 1`
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'No librarian account found' });
+    }
+    const target = rows[0];
+    if (req.user?.role !== 'LIBRARIAN') {
+      delete target.email;
+      target.email_visible = false;
+    } else {
+      target.email_visible = true;
+    }
+    res.json({ success: true, data: target });
+  } catch (err) {
+    console.error('Get librarian error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// Return all librarian/admin accounts so members can pick who to contact
+exports.listLibrarians = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT id, first_name, last_name, email, customer_id, role
+       FROM users WHERE role = 'LIBRARIAN' AND status = 'ACTIVE'
+       ORDER BY id ASC`
+    );
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('List librarians error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
@@ -55,8 +101,8 @@ exports.listUsers = async (req, res) => {
     );
 
     const [rows] = await pool.query(
-      `SELECT id, first_name, last_name, email, phone, role, customer_id, status, blocked_reason,
-              created_at,
+`SELECT id, first_name, last_name, email, phone, class_name, role, customer_id, physical_card_no, status, blocked_reason, profile_image,
+created_at,
               (SELECT COUNT(*) FROM borrowings b WHERE b.user_id = users.id AND b.status IN ('BORROWED','OVERDUE')) AS active_borrowings
        FROM users ${whereClause}
        ORDER BY created_at DESC LIMIT ? OFFSET ?`,
@@ -80,8 +126,8 @@ exports.getUser = async (req, res) => {
     const { id } = req.params;
 
     const [rows] = await pool.query(
-      `SELECT id, first_name, last_name, email, phone, role, customer_id, status, blocked_reason, created_at
-       FROM users WHERE id = ?`, [id]
+`SELECT id, first_name, last_name, email, phone, class_name, role, customer_id, physical_card_no, status, blocked_reason, profile_image, created_at
+FROM users WHERE id = ?`, [id]
     );
     if (rows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
 
@@ -120,10 +166,18 @@ exports.getUser = async (req, res) => {
 // Create user manually (librarian) - incl. guest temporary account
 exports.createUser = async (req, res) => {
   try {
-    const { first_name, last_name, email, phone, password, role } = req.body;
+    const { first_name, last_name, email, phone, password, role, class_name } = req.body;
 
     if (!first_name || !last_name || !email || !role) {
       return res.status(400).json({ success: false, message: 'Required fields missing' });
+    }
+
+    if (!password) {
+      return res.status(400).json({ success: false, message: 'Password is required' });
+    }
+    const pwError = passwordStrengthError(password);
+    if (pwError) {
+      return res.status(400).json({ success: false, message: pwError });
     }
 
     const allowedRole = String(role).toUpperCase();
@@ -134,22 +188,26 @@ exports.createUser = async (req, res) => {
     const [exist] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
     if (exist.length > 0) return res.status(409).json({ success: false, message: 'Email already exists' });
 
-    const hashed = password ? await bcrypt.hash(password, 10) : await bcrypt.hash('guest123', 10);
+    const hashed = await bcrypt.hash(password, 10);
     const customerId = await generateCustomerId(allowedRole);
 
     const [result] = await pool.query(
-      `INSERT INTO users (first_name, last_name, email, phone, password, role, customer_id, status)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE')`,
-      [first_name, last_name, email, phone || null, hashed, allowedRole, customerId]
+      `INSERT INTO users (first_name, last_name, email, phone, class_name, password, role, customer_id, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVE')`,
+      [first_name, last_name, email, phone || null, allowedRole === 'STUDENT' ? (class_name || null) : null, hashed, allowedRole, customerId]
     );
 
     const userId = result.insertId;
     const cardNumber = generateCardNumber(customerId);
     const qr = await generateCustomerQR(customerId, userId, {
+      first_name: first_name,
+      last_name: last_name,
       full_name: `${first_name} ${last_name}`.trim(),
       role: allowedRole,
       email,
       phone: phone || undefined,
+      status: 'ACTIVE',
+      class_name: allowedRole === 'STUDENT' ? (class_name || undefined) : undefined,
       card_number: cardNumber
     });
 
@@ -180,7 +238,7 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { first_name, last_name, email, phone, role, status } = req.body;
+    const { first_name, last_name, email, phone, role, status, class_name, physical_card_no } = req.body;
 
     const [exist] = await pool.query('SELECT id FROM users WHERE id = ?', [id]);
     if (exist.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
@@ -190,10 +248,12 @@ exports.updateUser = async (req, res) => {
         last_name = COALESCE(?, last_name),
         email = COALESCE(?, email),
         phone = COALESCE(?, phone),
+        class_name = COALESCE(?, class_name),
         role = COALESCE(?, role),
-        status = COALESCE(?, status)
+        status = COALESCE(?, status),
+        physical_card_no = COALESCE(?, physical_card_no)
        WHERE id = ?`,
-      [first_name, last_name, email, phone, role, status, id]
+      [first_name, last_name, email, phone, class_name, role, status, physical_card_no, id]
     );
 
     await pool.query(
@@ -229,18 +289,23 @@ exports.regenerateQR = async (req, res) => {
   try {
     const { user_id } = req.params;
     const [userRows] = await pool.query(
-      'SELECT customer_id, first_name, last_name, email, phone, role FROM users WHERE id = ?', [user_id]
+      'SELECT customer_id, first_name, last_name, email, phone, status, class_name, role, created_at FROM users WHERE id = ?', [user_id]
     );
     if (userRows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
     const usr = userRows[0];
 
     const cardNumber = generateCardNumber(usr.customer_id);
     const qr = await generateCustomerQR(usr.customer_id, parseInt(user_id), {
+      first_name: usr.first_name,
+      last_name: usr.last_name,
       full_name: `${usr.first_name} ${usr.last_name}`.trim(),
       role: usr.role,
       email: usr.email,
       phone: usr.phone || undefined,
-      card_number: cardNumber
+      status: usr.status,
+      class_name: usr.role === 'STUDENT' ? (usr.class_name || undefined) : undefined,
+      card_number: cardNumber,
+      created_at: usr.created_at
     });
 
     const [result] = await pool.query(
@@ -366,8 +431,12 @@ exports.resetPassword = async (req, res) => {
     const { id } = req.params;
     const { password } = req.body;
 
-    if (!password || password.length < 6) {
-      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+    if (!password) {
+      return res.status(400).json({ success: false, message: 'Password is required' });
+    }
+    const pwError = passwordStrengthError(password);
+    if (pwError) {
+      return res.status(400).json({ success: false, message: pwError });
     }
 
     const [exist] = await pool.query('SELECT id, role FROM users WHERE id = ?', [id]);

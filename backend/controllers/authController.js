@@ -6,14 +6,20 @@ const { pool } = require('../config/db');
 const { generateCustomerId, generateCardNumber } = require('../utils/customerUtils');
 const { generateCustomerQR, decryptPayload } = require('../utils/qrGenerator');
 const settingsController = require('./settingsController');
+const { passwordStrengthError } = require('../utils/passwordStrength');
 
 // Register a new user (student/teacher register themselves; guest created by librarian)
 exports.register = async (req, res) => {
   try {
-    const { first_name, last_name, email, phone, password, role = 'STUDENT' } = req.body;
+    const { first_name, last_name, email, phone, password, role = 'STUDENT', class_name } = req.body;
 
     if (!first_name || !last_name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields' });
+    }
+
+    const pwError = passwordStrengthError(password);
+    if (pwError) {
+      return res.status(400).json({ success: false, message: pwError });
     }
 
     const allowedRole = String(role).toUpperCase();
@@ -41,10 +47,14 @@ exports.register = async (req, res) => {
     // Generate QR card (with full member info embedded)
     const cardNumber = generateCardNumber(customerId);
     const qr = await generateCustomerQR(customerId, userId, {
+      first_name,
+      last_name,
       full_name: `${first_name} ${last_name}`.trim(),
       role: allowedRole,
       email,
       phone: phone || undefined,
+      status: 'ACTIVE',
+      class_name: allowedRole === 'STUDENT' ? (class_name || undefined) : undefined,
       card_number: cardNumber
     });
 
@@ -163,17 +173,94 @@ exports.loginWithQR = async (req, res) => {
       return res.status(400).json({ success: false, message: 'QR code data is required' });
     }
 
-    // Decrypt & verify QR payload signature
-    const payload = decryptPayload(String(qr_code));
-    if (!payload || !payload.customer_id) {
-      return res.status(400).json({ success: false, message: 'Invalid or tampered QR code' });
+    // Strip non-printable characters a camera can inject (BOM, ZWSP, etc.)
+    // without flattening the label/value structure of the printed member card.
+    const rawQr = String(qr_code)
+      .replace(/[\uFEFF\u200B-\u200D\u2060]/g, '')
+      .replace(/\r\n?/g, '\n')
+      .trim();
+    // Diagnose camera-vs-test mismatches: dump exact char codes so an
+    // invisible character in the scanned text becomes visible.
+    if (!/^(STU|TCH|GST|LIB)\d+$/i.test(rawQr)) {
+      const codes = Array.from(String(qr_code).slice(0, 40)).map(c => c.charCodeAt(0));
+      console.log('[QR-LOGIN] scan len=' + String(qr_code).length + ' preview=' + JSON.stringify(rawQr.slice(0, 160)) + ' codes=' + JSON.stringify(codes));
+    }
+    const payload = decryptPayload(rawQr);
+    let customerId = payload ? payload.customer_id : null;
+
+    // Fallback for older or vendor-issued cards: a QR can contain only a serial
+    // number, a card number, or a member ID. Match those against the current
+    // user and card records before rejecting the scan.
+    if (!customerId) {
+      const serialDigits = rawQr.replace(/\D+/g, '');
+      const candidateValues = Array.from(new Set([
+        rawQr,
+        rawQr.toUpperCase(),
+        rawQr.toLowerCase(),
+        serialDigits,
+        rawQr.replace(/[^A-Za-z0-9]/g, '')
+      ].filter(Boolean)));
+
+      const directValues = candidateValues.filter(Boolean);
+      const serialLike = serialDigits.length >= 4 ? `%${serialDigits}%` : `%${directValues[0] || ''}%`;
+
+      if (directValues.length > 0 || serialDigits.length >= 4) {
+        const conds = [];
+        const args = [];
+
+        if (directValues.length > 0) {
+          const p = directValues.map(() => '?').join(', ');
+          conds.push(`u.customer_id IN (${p})`);
+          args.push(...directValues);
+          conds.push(`u.physical_card_no IN (${p})`);
+          args.push(...directValues);
+        }
+        conds.push('u.customer_id LIKE ?');
+        args.push(serialLike);
+        conds.push('u.physical_card_no LIKE ?');
+        args.push(serialLike);
+        conds.push(
+          `EXISTS (
+             SELECT 1 FROM customer_cards cc
+             WHERE cc.user_id = u.id
+               AND (cc.card_number = ?
+                    OR cc.card_number LIKE ?
+                    OR cc.qr_code_data LIKE ?
+                    OR cc.qr_code_url LIKE ?)
+           )`
+        );
+        args.push(directValues[0] || '', serialLike, serialLike, serialLike);
+
+        const [bySerial] = await pool.query(
+          `SELECT u.id, u.first_name, u.last_name, u.email, u.phone, u.role, u.customer_id, u.status, u.profile_image
+           FROM users u
+           WHERE ${conds.join(' OR ')}
+           ORDER BY u.id ASC
+           LIMIT 1`,
+          args
+        );
+
+        if (bySerial.length > 0) {
+          customerId = bySerial[0].customer_id;
+        }
+      }
+    }
+
+    if (!customerId) {
+      console.log('[QR-LOGIN] -> REJECTED (no payload/customer_id) input=' + JSON.stringify(rawQr.slice(0, 200)));
+      const preview = rawQr.length > 120 ? rawQr.slice(0, 120) + '...' : rawQr;
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or tampered QR code',
+        received: preview
+      });
     }
 
     // Lookup user by customer_id
     const [rows] = await pool.query(
       `SELECT id, first_name, last_name, email, phone, role, customer_id, status, profile_image
        FROM users WHERE customer_id = ?`,
-      [payload.customer_id]
+      [customerId]
     );
 
     if (rows.length === 0) {
@@ -236,19 +323,24 @@ exports.regenerateMyQR = async (req, res) => {
   try {
     const userId = req.user.id;
     const [userRows] = await pool.query(
-      'SELECT customer_id, first_name, last_name, email, phone, role FROM users WHERE id = ?', [userId]
+      'SELECT customer_id, first_name, last_name, email, phone, status, class_name, role, created_at FROM users WHERE id = ?', [userId]
     );
     if (userRows.length === 0) return res.status(404).json({ success: false, message: 'User not found' });
     const usr = userRows[0];
 
-    // Generate fresh encrypted QR (with full member info) and card number
+    // Generate fresh QR card with full member info
     const cardNumber = generateCardNumber(usr.customer_id);
     const qr = await generateCustomerQR(usr.customer_id, userId, {
+      first_name: usr.first_name,
+      last_name: usr.last_name,
       full_name: `${usr.first_name} ${usr.last_name}`.trim(),
       role: usr.role,
       email: usr.email,
       phone: usr.phone || undefined,
-      card_number: cardNumber
+      status: usr.status,
+      class_name: usr.role === 'STUDENT' ? (usr.class_name || undefined) : undefined,
+      card_number: cardNumber,
+      created_at: usr.created_at
     });
 
     const [result] = await pool.query(
@@ -286,8 +378,8 @@ exports.getMe = async (req, res) => {
     const userId = req.user.id;
 
     const [rows] = await pool.query(
-      `SELECT id, first_name, last_name, email, phone, profile_image, role, role_id, customer_id, status,
-              blocked_reason, created_at
+`SELECT id, first_name, last_name, email, phone, profile_image, role, role_id, customer_id, status, class_name,
+blocked_reason, created_at
        FROM users WHERE id = ?`,
       [userId]
     );
@@ -381,6 +473,11 @@ exports.changePassword = async (req, res) => {
 
     if (!old_password || !new_password) {
       return res.status(400).json({ success: false, message: 'Old and new password required' });
+    }
+
+    const pwError = passwordStrengthError(new_password);
+    if (pwError) {
+      return res.status(400).json({ success: false, message: pwError });
     }
 
     const [rows] = await pool.query('SELECT password FROM users WHERE id = ?', [userId]);

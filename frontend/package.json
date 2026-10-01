@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
     "axios": "^1.7.4",
     "html5-qrcode": "^2.3.8",
+    "jsbarcode": "^3.12.3",
     "jspdf": "^2.5.1",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
@@ -17,11 +20,9 @@
     "socket.io-client": "^4.8.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
   },
   "eslintConfig": {
     "extends": [
@@ -41,9 +42,10 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
-    "react-scripts": "5.0.1",
-    "tailwindcss": "^3.4.10"
+    "tailwindcss": "^3.4.10",
+    "vite": "^5.4.10"
   }
 }

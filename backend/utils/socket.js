@@ -15,9 +15,13 @@ function initSocket(httpServer) {
 
   io.on('connection', (socket) => {
     const role = socket.handshake.query.role || 'guest';
+    const userId = socket.handshake.query.userId;
 
     if (role === 'LIBRARIAN') {
       socket.join('librarians');
+    }
+    if (userId) {
+      socket.join(`user-${userId}`);
     }
 
     socket.on('disconnect', () => {});

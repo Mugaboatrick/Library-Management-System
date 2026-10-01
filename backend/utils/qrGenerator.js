@@ -19,14 +19,24 @@ function encryptPayload(payload) {
 
 // Decrypt and verify payload signature.
 // Supports:
-//  - New encrypted format: { data: {...}, sig: '...' } (signature verified)
-//  - Legacy plain format:  { customer_id, uid, ts } (from pre-encryption cards)
+//  - New plain-text card format:  "First Name: ... \n Customer ID: TCH0001 ..."
+//  - Encrypted format:            { data: {...}, sig: '...' } (legacy signed cards, verified)
+//  - Legacy plain object format:  { customer_id, uid, ts } (from pre-encryption cards)
 //  - Raw plain customer id string (e.g. "STU0001")
 function decryptPayload(encrypted) {
-  try {
-    const parsed = JSON.parse(encrypted);
+  // Normalize scan noise BEFORE any parsing:
+  //  - convert CRLF to LF (phones/browsers may scan \r\n into the text)
+  //  - remove hidden zero-width characters sometimes injected by scanners
+  //  - preserve line breaks so the label:value payload remains parseable
+  const normalized = String(encrypted || '')
+    .replace(/[\uFEFF\u200B-\u200D\u2060]/g, '')
+    .replace(/\r\n?/g, '\n')
+    .trim();
 
-    // New encrypted format
+  try {
+    const parsed = JSON.parse(normalized);
+
+    // Legacy encrypted format
     if (parsed && parsed.data && parsed.sig) {
       const data = JSON.stringify(parsed.data);
       const valid = ALL_QR_SECRETS.some(
@@ -43,8 +53,37 @@ function decryptPayload(encrypted) {
 
     return null;
   } catch {
-    // Not valid JSON -> try as a plain customer id string
-    const trimmed = String(encrypted || '').trim();
+    const trimmed = normalized;
+
+    // Some phone scanners flatten the payload into one line.
+    const labelMatches = [...trimmed.matchAll(/([A-Za-z][A-Za-z ]+?)\s*:\s*([^\n]+)/g)];
+    if (labelMatches.length > 0) {
+      const map = {};
+      for (const [, label, value] of labelMatches) {
+        const key = label.trim().replace(/\s+/g, '_').toLowerCase();
+        map[key] = value.trim();
+      }
+      const id = map.customer_id;
+      if (id && /^(STU|TCH|GST|LIB)\d+$/i.test(id)) {
+        return { ...map, customer_id: id.toUpperCase() };
+      }
+    }
+
+    // New plain-text member card format: labeled lines, e.g. "Customer ID: TCH0001"
+    if (/Customer ID:/i.test(trimmed)) {
+      const map = {};
+      for (const line of trimmed.split('\n')) {
+        const m = line.match(/^([A-Za-z ]+):\s*(.*)\s*$/);
+        if (m) map[m[1].trim().replace(/\s+/g, '_').toLowerCase()] = m[2].trim();
+      }
+      const id = map.customer_id;
+      if (id && /^(STU|TCH|GST|LIB)\d+$/i.test(id)) {
+        return { ...map, customer_id: id.toUpperCase() };
+      }
+      return null;
+    }
+
+    // Legacy raw plain customer id string
     if (/^(STU|TCH|GST|LIB)\d+$/i.test(trimmed)) {
       return { customer_id: trimmed.toUpperCase() };
     }
@@ -52,29 +91,25 @@ function decryptPayload(encrypted) {
   }
 }
 
-// Encrypted QR generation for customer access cards.
-// The payload carries the user's full card information (besides customer_id/uid)
-// so the QR itself holds the complete member details.
-async function generateCustomerQR(customerId, userId, info = {}) {
-  const payloadData = {
-    customer_id: customerId,
-    uid: userId,
-    ts: Date.now()
-  };
-  if (info.full_name) payloadData.full_name = info.full_name;
-  if (info.role) payloadData.role = info.role;
-  if (info.email) payloadData.email = info.email;
-  if (info.phone) payloadData.phone = info.phone;
-  if (info.card_number) payloadData.card_number = info.card_number;
+function formatCreatedDate(value) {
+  if (!value) return '';
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return String(value);
+  return d.toLocaleDateString('en-US'); // e.g. 9/17/2026
+}
 
-  const payload = encryptPayload(payloadData);
+// QR generation for customer access cards.
+// Keep the QR payload minimal and deterministic: a plain member ID is the most
+// reliable input for phone cameras and browser scanners during login.
+async function generateCustomerQR(customerId, userId, info = {}) {
+  const payload = String(customerId || '').trim();
 
   const filename = `${customerId}_${Date.now()}.png`;
   const filepath = path.join(qrcardsDir, filename);
 
   await QRCode.toFile(filepath, payload, {
-    width: 400,
-    margin: 2,
+    width: 600,
+    margin: 3,
     color: { dark: '#000000', light: '#ffffff' },
     errorCorrectionLevel: 'H'
   });

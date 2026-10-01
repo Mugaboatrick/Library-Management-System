@@ -5,13 +5,17 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { ebookService } from '../services';
 import offlineCache from '../services/offlineCache';
+import { authStorage } from '../services/authStorage';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { accessModeBadge } from '../utils/ebookAccess';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 const EReader = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [scale, setScale] = useState(1.0);
@@ -24,14 +28,25 @@ const EReader = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchIndex, setSearchIndex] = useState(0);
   const [isOfflineCopy, setIsOfflineCopy] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  const [isProtected, setIsProtected] = useState(false);
+  const [accessMode, setAccessMode] = useState('READ_ONLY');
   const pdfRef = useRef(null);
 
   useEffect(() => {
     // Disable right click for PDF document security
     const disableRightClick = (e) => e.preventDefault();
     document.addEventListener('contextmenu', disableRightClick);
-    return () => document.removeEventListener('contextmenu', disableRightClick);
+
+    // Disable copying text from the document
+    const disableCopy = (e) => e.preventDefault();
+    document.addEventListener('copy', disableCopy);
+    document.addEventListener('cut', disableCopy);
+
+    return () => {
+      document.removeEventListener('contextmenu', disableRightClick);
+      document.removeEventListener('copy', disableCopy);
+      document.removeEventListener('cut', disableCopy);
+    };
   }, []);
 
   useEffect(() => {
@@ -42,7 +57,7 @@ const EReader = () => {
   const loadBook = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = authStorage.getToken();
 
       // Prefer the locally downloaded copy (works offline, and for borrowed books)
       const cached = await offlineCache.get(parseInt(id));
@@ -59,6 +74,8 @@ const EReader = () => {
       const res = await ebookService.list({ limit: 100 });
       const found = res.data.data.find(e => e.id === parseInt(id));
       setEbookTitle(found?.title || cached?.title || 'E-Book');
+      setIsProtected(Number(found?.is_protected) === 1);
+      setAccessMode(found?.access_mode || 'READ_ONLY');
 
       // Load bookmarks
       const bm = await ebookService.myBookmarks();
@@ -148,24 +165,14 @@ const EReader = () => {
     }
   };
 
-  const downloadToDevice = async () => {
-    if (downloading || isOfflineCopy) return;
-    setDownloading(true);
-    try {
-      const token = localStorage.getItem('token');
-      await offlineCache.save(parseInt(id), ebookTitle || 'ebook', `${ebookService.download(id)}?token=${token}`);
-      setIsOfflineCopy(true);
-      toast.success('Book saved to this device — now readable offline');
-    } catch (err) {
-      toast.error(err.message || 'Failed to download book');
-    } finally {
-      setDownloading(false);
-    }
-  };
-
   const goToPage = (p) => {
     const target = Math.min(Math.max(1, p), numPages);
     setPageNumber(target);
+  };
+
+  const handleBack = () => {
+    const homeRoute = user?.role === 'LIBRARIAN' ? '/admin/ebooks' : '/dashboard';
+    navigate(homeRoute, { replace: true });
   };
 
   return (
@@ -173,9 +180,14 @@ const EReader = () => {
       {/* Reader toolbar */}
       <div className="bg-gray-900 text-white px-4 py-2 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="px-3 py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-sm">← Back</button>
+          <button onClick={handleBack} className="px-3 py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-sm"> Back</button>
           <span className="font-semibold">{ebookTitle}</span>
-          <span className="text-xs text-gray-400">{isOfflineCopy ? '(Downloaded to device — offline)' : '(Protected Reader)'}</span>
+          {(() => { const b = accessModeBadge(accessMode); return (
+            <span className={`px-2 py-0.5 rounded text-xs font-medium ${b.className}`}>
+              {b.label}
+            </span>
+          ); })()}
+          <span className="text-xs text-gray-400">{isOfflineCopy ? '(Downloaded to device — offline)' : '(Reading online)'}</span>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <div className="flex items-center gap-1 bg-gray-800 rounded-lg px-2 py-1">
@@ -183,7 +195,7 @@ const EReader = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') performSearch(); }}
-              placeholder="🔍 Search in book..."
+              placeholder=" Search in book..."
               className="w-40 bg-transparent text-white placeholder-gray-400 text-sm focus:outline-none"
             />
             <button onClick={performSearch} disabled={searching} className="text-gray-300 hover:text-white disabled:opacity-50">
@@ -197,14 +209,22 @@ const EReader = () => {
               </>
             )}
           </div>
-          <button onClick={() => addBookmark()} className="px-3 py-1.5 rounded bg-primary-600 hover:bg-primary-700">🔖 Bookmark</button>
-          <button
-            onClick={downloadToDevice}
-            disabled={downloading || isOfflineCopy}
-            className="px-3 py-1.5 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-sm"
-          >
-            {isOfflineCopy ? '✓ Saved to device' : (downloading ? 'Saving…' : '⬇ Download to device')}
-          </button>
+          <button onClick={() => addBookmark()} className="px-3 py-1.5 rounded bg-primary-600 hover:bg-primary-700"> Bookmark</button>
+          {isOfflineCopy ? (
+            <span className="px-3 py-1.5 rounded bg-gray-700 text-sm text-gray-200"> Saved to device</span>
+          ) : accessMode === 'READ_ONLY' ? (
+            <span className="px-3 py-1.5 rounded bg-gray-800 text-sm text-amber-300 flex items-center gap-1">
+              <span></span> Read online only — copying & download disabled
+            </span>
+          ) : accessMode === 'BORROW_ONLY' ? (
+            <span className="px-3 py-1.5 rounded bg-gray-800 text-sm text-blue-300 flex items-center gap-1">
+              <span></span> Borrow-only copy — online reading unlocked by borrowing
+            </span>
+          ) : (
+            <span className="px-3 py-1.5 rounded bg-gray-800 text-sm text-indigo-300 flex items-center gap-1">
+              <span></span> Read &amp; borrow — download to device after borrowing
+            </span>
+          )}
           <button onClick={() => setScale(s => Math.max(0.5, +(s - 0.25).toFixed(2)))} className="px-2 py-1.5 rounded bg-gray-700 hover:bg-gray-600">−</button>
           <span>{Math.round(scale * 100)}%</span>
           <button onClick={() => setScale(s => Math.min(2.5, +(s + 0.25).toFixed(2)))} className="px-2 py-1.5 rounded bg-gray-700 hover:bg-gray-600">+</button>
@@ -251,7 +271,7 @@ const EReader = () => {
       )}
 
       {/* Document */}
-      <div className="flex-1 overflow-auto flex justify-center p-6 no-right-click" onContextMenu={(e) => e.preventDefault()}>
+      <div className="flex-1 overflow-auto flex justify-center p-6 no-right-click select-none" onContextMenu={(e) => e.preventDefault()} onCopy={(e) => e.preventDefault()} onCut={(e) => e.preventDefault()} onPaste={(e) => e.preventDefault()}>
         {loading ? (
           <div className="text-white text-center py-12">Loading document...</div>
         ) : fileUrl && (

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import BackButton from '../../components/common/BackButton';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -29,7 +30,8 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 to-primary-700 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-900 to-primary-700 p-4 relative">
+      <div className="absolute top-4 left-4 z-20"><BackButton /></div>
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 animate-zoom-in">
         <div className="text-center mb-6 animate-fade-up">
           <img src="/hope-logo.png" alt="Hope Haven School Library" className="w-16 h-16 object-contain mb-2 mx-auto" />
@@ -37,11 +39,12 @@ const AdminLogin = () => {
           <p className="text-gray-500 text-sm">Hope Haven School Library Management</p>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
+              autoComplete="off"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -53,10 +56,11 @@ const AdminLogin = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-              placeholder="••••••••"
+              placeholder="Enter your password"
               required
             />
           </div>

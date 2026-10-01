@@ -5,9 +5,9 @@
   "description": "Hope Haven Smart Library Management & E-Book System",
   "scripts": {
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
-    "dev": "concurrently \"npm run dev --prefix backend\" \"npm start --prefix frontend\"",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "start:backend": "npm start --prefix backend",
-    "start:frontend": "npm start --prefix frontend"
+    "start:frontend": "npm run dev --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

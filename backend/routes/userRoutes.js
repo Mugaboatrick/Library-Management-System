@@ -4,6 +4,8 @@ const userController = require('../controllers/userController');
 const { auth, requireRole } = require('../middleware/auth');
 
 router.get('/limits', auth, userController.getBorrowLimitInfo);
+router.get('/librarian', auth, userController.getLibrarian);
+router.get('/librarians', auth, userController.listLibrarians);
 
 router.use(auth, requireRole('LIBRARIAN'));
 

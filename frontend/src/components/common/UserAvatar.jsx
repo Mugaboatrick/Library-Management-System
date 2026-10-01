@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { publicUrl } from '../../services/api';
 
 const UserAvatar = ({ user, size = 'md', className = '' }) => {
-  const initials = `${user?.first_name?.[0] || ''}${user?.last_name?.[0] || ''}`.toUpperCase() || '👤';
-  const imgSrc = publicUrl(user?.profile_image);
+  const [imgError, setImgError] = useState(false);
+  const initials = `${user?.first_name?.[0] || ''}${user?.last_name?.[0] || ''}`.toUpperCase() || '';
+  const imgSrc = imgError ? null : publicUrl(user?.profile_image);
 
   const sizes = {
     sm: 'w-9 h-9 text-sm',
@@ -17,6 +18,7 @@ const UserAvatar = ({ user, size = 'md', className = '' }) => {
         src={imgSrc}
         alt={`${user?.first_name || ''} ${user?.last_name || ''}`}
         className={`${sizes[size] || sizes.md} rounded-full object-cover ring-2 ring-white/60 shadow ${className}`}
+        onError={() => setImgError(true)}
       />
     );
   }
